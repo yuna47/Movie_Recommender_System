@@ -1,0 +1,52 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 화면 높이의 100% */
+    margin: 0; /* body의 기본 마진 제거 */
+}
+
+
+form{
+    width: 300px; /* 폼의 너비 지정 (조절 가능) */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+}
+h1 {
+    color: #333;
+}
+
+
+.container {
+    text-align: center; /* 텍스트를 가운데 정렬 */
+}
+
+input[type="text"],
+input[type="password"] {
+    margin-bottom: 10px; /* 아래에 간격 추가 */
+    padding: 8px; /* 입력 창 내부 간격 조절 (선택적) */
+    width: 100%; /* 창 너비 100%로 설정 */
+}
+
+input[type ="submit"] {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
