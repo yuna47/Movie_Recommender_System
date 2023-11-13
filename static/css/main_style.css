@@ -26,7 +26,7 @@ body {
     color: #ff0000;
 }
 
-#loginButton {
+#logoutButton {
     padding: 10px 20px;
     font-size: 16px;
     background-color: #ff0000;
@@ -40,6 +40,58 @@ body {
     right: 10px;*/
 }
 
-#loginButton:hover {
+#logoutButton:hover {
     background-color: #45a049;
+}
+
+.movie-posters {
+    display: flex;
+    flex-direction: row; /* 수정된 부분: 포스터를 수평으로 나열 */
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.movie-poster img {
+    min-width: 30%;
+    max-width: 40%;
+    height: auto;
+    border-radius: 10px;
+    margin-right: 0px
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.movie-poster p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+/* 예시: 영화 상세 정보 모달 스타일 */
+#movieDetailModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+#movieDetailModal img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.movie-poster img:last-child {
+    margin-right: 0; /* 마지막 포스터에는 마진을 적용하지 않음 */
+}
+
+#movieDetailModal p {
+    margin: 10px 0;
+    font-size: 18px;
 }

@@ -44,6 +44,8 @@ input {
 }
 
 button {
+    min-width: 300px;
+    max-width: 400px;
     background-color: #ff0000;
     color: #fff;
     padding: 10px 20px;
@@ -52,7 +54,7 @@ button {
     cursor: pointer;
 }
 
-input[type ="submit"] {
+button[type ="submit"] {
     margin-top: 10px;
     padding: 10px 20px;
     font-size: 16px;
@@ -63,6 +65,6 @@ input[type ="submit"] {
     cursor: pointer;
 }
 
-input[type="submit"]:hover {
+button[type="submit"]:hover {
     background-color: #45a049;
 }

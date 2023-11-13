@@ -1,0 +1,31 @@
+<!-- templates/main.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_style.css') }}">
+</head>
+<body>
+    <div class = "header">
+        <h1>MovieFlix</h1>
+        <input type="text" placeholder="Search...">
+        <button id="loginButton" >Login</button>
+
+    </div>
+
+    <script>
+        // 버튼 클릭 이벤트 처리
+        document.getElementById('loginButton').addEventListener('click', function() {
+            window.location.href = "{{ url_for('login') }}";
+        });
+    </script>
+    <h1>Main Page</h1>
+    <p>Welcome to the main page!</p>
+    <!-- 로그인 페이지로 이동하는 버튼 -->
+
+
+</body>
+</html>

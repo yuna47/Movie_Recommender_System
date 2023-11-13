@@ -1,6 +1,7 @@
 <!-- templates/main.html -->
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,20 +13,64 @@
     <div class = "header">
         <h1>MovieFlix</h1>
         <input type="text" placeholder="Search...">
-        <button id="loginButton" >Login</button>
+        <button id="logoutButton" >Logout</button>
 
     </div>
-   <!-- 로그인 페이지로 이동하는 버튼 -->
 
-    <script>
-        // 버튼 클릭 이벤트 처리
-        document.getElementById('loginButton').addEventListener('click', function() {
-            window.location.href = "{{ url_for('login') }}";
-        });
-    </script>
-    <h1>Main Page</h1>
+    <h1>{user}님의 취향저격 베스트 콘텐츠</h1>
     <p>Welcome to the main page!</p>
-    <!-- 로그인 페이지로 이동하는 버튼 -->
+
+   <div class="movie-posters">
+        <div class="movie-poster" data_movie_id="1">
+            <img src="https://blog.kakaocdn.net/dn/bmIwxA/btrVE1Ql6YL/kfImMiXEd19Kch9ziopPj0/img.jpg" alt="Movie Poster 1">
+            <p>Movie Title 1</p>
+        </div>
+        <div class="movie-poster" data_movie_id="2">
+<!--            <img src="https://example.com/poster2.jpg" alt="Movie Poster 2">-->
+            <img src="https://blog.kakaocdn.net/dn/bmIwxA/btrVE1Ql6YL/kfImMiXEd19Kch9ziopPj0/img.jpg" alt="Movie Poster 2">
+
+            <p>Movie Title 2</p>
+        </div>
+       <div class="movie-poster" data_movie_id="3">
+<!--            <img src="https://example.com/poster2.jpg" alt="Movie Poster 2">-->
+            <img src="https://blog.kakaocdn.net/dn/bmIwxA/btrVE1Ql6YL/kfImMiXEd19Kch9ziopPj0/img.jpg" alt="Movie Poster 3">
+
+            <p>Movie Title 3</p>
+        </div>
+       <div class="movie-poster" data_movie_id="4">
+<!--            <img src="https://example.com/poster2.jpg" alt="Movie Poster 2">-->
+            <img src="https://blog.kakaocdn.net/dn/bmIwxA/btrVE1Ql6YL/kfImMiXEd19Kch9ziopPj0/img.jpg" alt="Movie Poster 4">
+
+            <p>Movie Title 4</p>
+        </div>
+        <!-- 추가적인 영화 포스터들을 필요에 따라 추가 -->
+   </div>
+
+
+        <script>
+            // 버튼 클릭 이벤트 처리
+            document.getElementById('logoutButton').addEventListener('click', function() {
+                window.location.href = "{{ url_for('start') }}";
+            });
+
+            // 영화 포스터 클릭 이벤트 처리
+            document.querySelectorAll('.movie-poster').forEach(function(poster) {
+                poster.addEventListener('click', function() {
+                    var movieId = this.getAttribute('data_movie_id');
+                    showMovieDetails(movieId);
+                });
+            });
+
+            function showMovieDetails(movieId) {
+                // 클릭한 영화의 상세 정보 페이지로 이동
+
+                window.location.href = "{{ url_for('movieDetails', data_movie_id='1') }}" + movieId;
+            }
+
+
+        </script>
+
+    </div>
 
 
 </body>
