@@ -1,5 +1,8 @@
 import re
 import time
+from io import BytesIO
+
+import requests
 import scrapy
 from selenium import webdriver
 from selenium.common import NoSuchElementException, TimeoutException
@@ -23,6 +26,7 @@ class MovieSpider(scrapy.Spider):
         self.driver.quit()
 
     def parse(self, response, **kwargs):
+        global raw_img_url
         url = "https://www.kobis.or.kr/kobis/business/mast/mvie/searchMovieList.do"
         self.driver.get(url)
 
@@ -58,25 +62,18 @@ class MovieSpider(scrapy.Spider):
         click_btn('//*[@id="mul_chk_det18"]')
         click_btn('//*[@id="mul_chk_det19"]')
         click_btn('//*[@id="mul_chk_det20"]')
-        time.sleep(1)
         click_btn('//*[@id="layerConfirmChk"]')
         time.sleep(1)
 
         # 국적1(한국) 선택
         click_btn('//*[@id="sNationStr"]')
-        load_item('//*[@id="tblChk"]')
-        time.sleep(1)
         click_btn('//*[@id="mul_chk_det2"]')
-        time.sleep(1)
         click_btn('//*[@id="layerConfirmChk"]')
         time.sleep(1)
 
         # 국적2(한국) 선택
         click_btn('//*[@id ="sRepNationStr"]')
-        load_item('//*[@id="tblChk"]')
-        time.sleep(1)
         click_btn('//*[@id="mul_chk_det2"]')
-        time.sleep(1)
         click_btn('//*[@id="layerConfirmChk"]')
         time.sleep(1)
 
@@ -87,19 +84,16 @@ class MovieSpider(scrapy.Spider):
         click_btn('//*[@id="mul_chk_det3"]')
         click_btn('//*[@id="mul_chk_det4"]')
         click_btn('//*[@id="mul_chk_det5"]')
-        time.sleep(1)
         # 2002-05-01~2006-10-28
         click_btn('//*[@id="mul_chk_det10"]')
         click_btn('//*[@id="mul_chk_det11"]')
         click_btn('//*[@id="mul_chk_det12"]')
         click_btn('//*[@id="mul_chk_det13"]')
-        time.sleep(1)
         # 2002-05-01~2006-10-28
         click_btn('//*[@id="mul_chk_det17"]')
         click_btn('//*[@id="mul_chk_det18"]')
         click_btn('//*[@id="mul_chk_det19"]')
         click_btn('//*[@id="mul_chk_det20"]')
-        time.sleep(1)
         click_btn('//*[@id="layerConfirmChk"]')
         time.sleep(1)
 
@@ -165,6 +159,41 @@ class MovieSpider(scrapy.Spider):
                         self.driver.find_element(By.XPATH, close_btn).click()
                         continue
 
+                    # 이미지 가져오기
+                    img_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[2]/a'
+                    try:
+                        img_element = self.driver.find_element(By.XPATH, img_xpath)
+                        # alt 속성 가져오기
+                        alt_attribute = img_element.get_attribute("alt")
+
+                        # "이미지 없음"이 아닌 경우에만 원본 이미지 페이지로 이동(이미지 크롤링 수행)
+                        if alt_attribute != "이미지 없음":
+                            click_btn(img_xpath)
+
+                            main_window_handle = self.driver.current_window_handle
+                            # 원본 이미지 창의 핸들을 얻기
+                            new_window_handles = [handle for handle in self.driver.window_handles if
+                                                  handle != main_window_handle]
+                            new_window_handle = new_window_handles[0]
+
+                            # 원본 이미지 창으로 전환
+                            self.driver.switch_to.window(new_window_handle)
+                            raw_img_xpath = '/html/body/a/img'
+                            raw_img_element = self.driver.find_element(By.XPATH, raw_img_xpath)
+                            raw_img_url = raw_img_element.get_attribute("src")
+
+                            # 원본 이미지 창에서의 작업이 완료되면 창을 닫기
+                            self.driver.close()
+
+                            # 기존의 창으로 전환
+                            self.driver.switch_to.window(main_window_handle)
+
+                    # 이미지가 없는 경우 크롤링 제외(모달창 닫기)
+                    except NoSuchElementException:
+                        close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
+                        self.driver.find_element(By.XPATH, close_btn).click()
+                        continue
+
                     # 모달창 닫기
                     close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
                     self.driver.find_element(By.XPATH, close_btn).click()
@@ -173,7 +202,8 @@ class MovieSpider(scrapy.Spider):
                     yield {
                         'title': title.strip(),
                         'genre': genre.strip(),
-                        'synopsis': synopsis.strip()
+                        'synopsis': synopsis.strip(),
+                        'img_url': raw_img_url
                     }
 
             # 페이지 넘기기 버튼 클릭
