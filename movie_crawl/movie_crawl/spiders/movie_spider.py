@@ -129,12 +129,24 @@ class MovieSpider(scrapy.Spider):
                 # 각 페이지 테이블 내용 순회
                 movie_rows = self.driver.find_elements(By.XPATH, '//*[@id="content"]/div[4]/table/tbody/tr')
                 for idx, row in enumerate(movie_rows, start=1):
+                    # '공연'과 '성인물(에로)'을 제외한 장르 필터링
+                    genre_xpath = f'//*[@id="content"]/div[4]/table/tbody/tr[{idx}]/td[7]/span'
+                    genre = self.driver.find_element(By.XPATH, genre_xpath).text
+                    excluded_genres = ['공연', '성인물(에로)']
+                    if any(excluded_genre in genre for excluded_genre in excluded_genres):
+                        continue
+
+                    # 모달 창 열기
                     movie_detail_xpath = f'//*[@id="content"]/div[4]/table/tbody/tr[{idx}]/td[1]/span/a'
 
                     movie_detail_link = WebDriverWait(self.driver, 10).until(
                         EC.presence_of_element_located((By.XPATH, movie_detail_xpath))
                     )
                     movie_detail_link.click()
+
+                    # 제목 가져오기
+                    title_xpath = '/html/body/div[3]/div[1]/div[1]/div/strong'
+                    title = self.driver.find_element(By.XPATH, title_xpath).text
 
                     # 장르 가져오기
                     genre_info_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[2]/dl/dd[4]'
@@ -143,37 +155,26 @@ class MovieSpider(scrapy.Spider):
                     match = genre_pattern.search(genre_info)
                     genre = match.group(1).strip()
 
-                    if '성인물(에로)' in genre or '공연' in genre:
-                        # 모달창 닫기
+                    # 시놉시스 가져오기
+                    synopsis_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[5]/p'
+                    try:
+                        synopsis = self.driver.find_element(By.XPATH, synopsis_xpath).text
+                    except NoSuchElementException:
+                        # 시놉시스가 없는 경우 크롤링 제외(모달창 닫기)
                         close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
                         self.driver.find_element(By.XPATH, close_btn).click()
                         continue
 
-                    else:
-                        # 제목 가져오기
-                        title_xpath = '/html/body/div[3]/div[1]/div[1]/div/strong'
-                        title = self.driver.find_element(By.XPATH, title_xpath).text
+                    # 모달창 닫기
+                    close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
+                    self.driver.find_element(By.XPATH, close_btn).click()
 
-                        # 시놉시스 가져오기
-                        synopsis_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[5]/p'
-                        try:
-                            synopsis = self.driver.find_element(By.XPATH, synopsis_xpath).text
-                        except NoSuchElementException:
-                            # 시놉시스가 없는 경우 크롤링 제외(모달창 닫기)
-                            close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
-                            self.driver.find_element(By.XPATH, close_btn).click()
-                            continue
-
-                        # 모달창 닫기
-                        close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
-                        self.driver.find_element(By.XPATH, close_btn).click()
-
-                        # 가져온 정보를 yield하여 Scrapy 아이템으로 전달
-                        yield {
-                            'title': title.strip(),
-                            'genre': genre.strip(),
-                            'synopsis': synopsis.strip()
-                        }
+                    # 가져온 정보를 yield하여 Scrapy 아이템으로 전달
+                    yield {
+                        'title': title.strip(),
+                        'genre': genre.strip(),
+                        'synopsis': synopsis.strip()
+                    }
 
             # 페이지 넘기기 버튼 클릭
             try:

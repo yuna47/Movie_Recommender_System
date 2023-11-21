@@ -13,6 +13,7 @@ class CsvPipeline:
         genre = item.get('genre')
         synopsis = item.get('synopsis')
 
+        # 각 데이터를 리스트로 만들어서 writerow에 전달
         self.writer.writerow([title, genre, synopsis])
 
         return item
