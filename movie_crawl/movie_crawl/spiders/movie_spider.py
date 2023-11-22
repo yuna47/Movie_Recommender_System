@@ -1,8 +1,5 @@
 import re
 import time
-from io import BytesIO
-
-import requests
 import scrapy
 from selenium import webdriver
 from selenium.common import NoSuchElementException, TimeoutException
