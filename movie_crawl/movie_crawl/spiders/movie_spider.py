@@ -187,30 +187,37 @@ class MovieSpider(scrapy.Spider):
                     # 배우 가져오기
                     actor_elements_1 = self.driver.find_elements(By.XPATH,
                                                                '/html/body/div[3]/div[2]/div/div[1]/div[6]/div/dl/div[2]/dd/table[1]/tbody/tr/td/a')
-                    # actor_elements_2 = self.driver.find_elements(By.XPATH,
-                    #                                            '/html/body/div[3]/div[2]/div/div[1]/div[7]/div/dl/div[2]/dd/table[1]/tbody/tr/td/a')
+                    actor_elements_2 = self.driver.find_elements(By.XPATH,
+                                                               '/html/body/div[3]/div[2]/div/div[1]/div[7]/div/dl/div[2]/dd/table[1]/tbody/tr/td/a')
 
                     actors_list = []
                     try:
                         for actor_element in actor_elements_1:
-                            actor_name = actor_element.text.split('(')[0].strip()
+                            actor_info = actor_element.text.split('(')[0].strip()
+                            # 배우의 이름만 가져오기
+                            if '(' in actor_info:
+                                actor_name = actor_info.split(' ')[-1].strip()
+                            else:
+                                actor_name = actor_info.strip()
                             actors_list.append(actor_name)
-                        actor = ', '.join(actors_list)
                     except NoSuchElementException:
-                        # 두 번째 XPath 시도
-                        try:
-                            actor_elements_2 = self.driver.find_elements(By.XPATH,
-                                                                         '/html/body/div[3]/div[2]/div/div[1]/div[7]/div/dl/div[2]/dd/table[1]/tbody/tr/td/a')
-                            for actor_element in actor_elements_2:
-                                actor_name = actor_element.text.split('(')[0].strip()
-                                print(actor_name)
-                                actors_list.append(actor_name)
-                            actor = ', '.join(actors_list)
-                        # 없는 경우 크롤링 제외(모달창 닫기)
-                        except NoSuchElementException:
-                            close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
-                            self.driver.find_element(By.XPATH, close_btn).click()
-                            continue
+                        pass
+                    # 두 번째 XPath 시도
+                    try:
+                        for actor_element_2 in actor_elements_2:
+                            actor_info = actor_element_2.text.split('(')[0].strip()
+                            # 배우의 이름만 가져오기
+                            if '(' in actor_info:
+                                actor_name = actor_info.split(' ')[-1].strip()
+                            else:
+                                actor_name = actor_info.strip()
+                            actors_list.append(actor_name)
+                    # 둘 다 없는 경우 크롤링 제외(모달창 닫기)
+                    except NoSuchElementException:
+                        close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
+                        self.driver.find_element(By.XPATH, close_btn).click()
+                        continue
+                    actor = ', '.join(actors_list)
 
                     # 장르 가져오기
                     genre_info_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[2]/dl/dd[4]'
