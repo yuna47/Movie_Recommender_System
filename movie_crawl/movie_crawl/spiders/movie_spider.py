@@ -104,7 +104,7 @@ class MovieSpider(scrapy.Spider):
 
         # 필터링 후 검색
         click_btn('//*[@id="searchForm"]/div[1]/div[5]/button[1]')
-        time.sleep(1)
+        time.sleep(2)
 
         # 크롤링 시작
         # 페이지 순회
@@ -138,9 +138,31 @@ class MovieSpider(scrapy.Spider):
                     )
                     movie_detail_link.click()
 
+                    # 시놉시스 가져오기
+                    synopsis_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[5]/p'
+                    try:
+                        synopsis = self.driver.find_element(By.XPATH, synopsis_xpath).text
+                    # 시놉시스가 없는 경우 크롤링 제외(모달창 닫기)
+                    except NoSuchElementException:
+                        close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
+                        self.driver.find_element(By.XPATH, close_btn).click()
+                        continue
+
                     # 제목 가져오기
                     title_xpath = '/html/body/div[3]/div[1]/div[1]/div/strong'
                     title = self.driver.find_element(By.XPATH, title_xpath).text
+
+                    # 감독 가져오기
+                    director_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[6]/div/dl/div[1]/dd/a'
+                    director = self.driver.find_element(By.XPATH, director_xpath).text
+
+                    # 배우 가져오기
+                    actor_elements = self.driver.find_elements(By.XPATH,'/html/body/div[3]/div[2]/div/div[1]/div[6]/div/dl/div[2]/dd/table[1]/tbody/tr/td/a')
+                    actors_list = []
+                    for actor_element in actor_elements:
+                        actor_name = actor_element.text.split('(')[0].strip()
+                        actors_list.append(actor_name)
+                    actor = ', '.join(actors_list)
 
                     # 장르 가져오기
                     genre_info_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[2]/dl/dd[4]'
@@ -148,16 +170,6 @@ class MovieSpider(scrapy.Spider):
                     genre_pattern = re.compile(r'\|\s*[^|]+\s*\|\s*([^|]+)\s*\|')
                     match = genre_pattern.search(genre_info)
                     genre = match.group(1).strip()
-
-                    # 시놉시스 가져오기
-                    synopsis_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[5]/p'
-                    try:
-                        synopsis = self.driver.find_element(By.XPATH, synopsis_xpath).text
-                    except NoSuchElementException:
-                        # 시놉시스가 없는 경우 크롤링 제외(모달창 닫기)
-                        close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
-                        self.driver.find_element(By.XPATH, close_btn).click()
-                        continue
 
                     # 이미지 가져오기
                     img_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[2]/a'
@@ -202,6 +214,8 @@ class MovieSpider(scrapy.Spider):
                     yield {
                         'title': title.strip(),
                         'genre': genre.strip(),
+                        'director': director.strip(),
+                        'actor': actor.strip(),
                         'synopsis': synopsis.strip(),
                         'img_url': raw_img_url
                     }
