@@ -1,19 +1,24 @@
+import secrets
+
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_migrate import Migrate
 
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@210.117.128.202:3306/movieflix'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@localhost:3306/movieflix'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = secrets.token_hex(16)
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
 
 movies = [
     {
@@ -55,6 +60,10 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
+        print(f"User: {user.username}")
+        print(f"Userpw: {user.password}")
+
+
         if user and check_password_hash(user.password, password):
             session['user'] = {'id': user.id, 'username': user.username}
             return redirect(url_for('main'))
@@ -77,16 +86,13 @@ def start():
 def signUp():
     if request.method == 'POST':
         username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-        confirm_password = request.form['confirm_password']
 
-        if not username or not password or not confirm_password:
+        if not username or not email or not password:
             return render_template('signup.html', error='Please fill in all fields.')
 
-        if password != confirm_password:
-            return render_template('signup.html', error='Passwords do not match.')
-
-        hashed_password = generate_password_hash(password, method='sha256')
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
