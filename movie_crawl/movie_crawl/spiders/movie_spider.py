@@ -107,6 +107,12 @@ class MovieSpider(scrapy.Spider):
         time.sleep(2)
 
         # 크롤링 시작
+        # click_btn('//*[@id="pagingForm"]/div/a[1]')
+        # time.sleep(1)
+        # for i in range(1, 19):
+        #     click_btn('//*[@id="pagingForm"]/div/a[3]')
+        #     time.sleep(1)
+
         # 페이지 순회
         while True:
             for page_number in range(1, 11):
@@ -139,37 +145,85 @@ class MovieSpider(scrapy.Spider):
                     movie_detail_link.click()
 
                     # 시놉시스 가져오기
-                    synopsis_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[5]/p'
+                    synopsis_xpath_1 = '/html/body/div[3]/div[2]/div/div[1]/div[5]/p'
+                    synopsis_xpath_2 = '/html/body/div[3]/div[2]/div/div[1]/div[6]/p'
                     try:
-                        synopsis = self.driver.find_element(By.XPATH, synopsis_xpath).text
-                    # 시놉시스가 없는 경우 크롤링 제외(모달창 닫기)
+                        synopsis = self.driver.find_element(By.XPATH, synopsis_xpath_1).text
+                    except NoSuchElementException:
+                        # 두 번째 XPath 시도
+                        try:
+                            synopsis = self.driver.find_element(By.XPATH, synopsis_xpath_2).text
+                        # 없는 경우 크롤링 제외(모달창 닫기)
+                        except NoSuchElementException:
+                            close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
+                            self.driver.find_element(By.XPATH, close_btn).click()
+                            continue
+
+                    # 제목 가져오기
+                    title_xpath = '/html/body/div[3]/div[1]/div[1]/div/strong'
+                    try:
+                        title = self.driver.find_element(By.XPATH, title_xpath).text
+                    # 없는 경우 크롤링 제외(모달창 닫기)
                     except NoSuchElementException:
                         close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
                         self.driver.find_element(By.XPATH, close_btn).click()
                         continue
 
-                    # 제목 가져오기
-                    title_xpath = '/html/body/div[3]/div[1]/div[1]/div/strong'
-                    title = self.driver.find_element(By.XPATH, title_xpath).text
-
                     # 감독 가져오기
-                    director_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[6]/div/dl/div[1]/dd/a'
-                    director = self.driver.find_element(By.XPATH, director_xpath).text
+                    director_xpath_1 = '/html/body/div[3]/div[2]/div/div[1]/div[6]/div/dl/div[1]/dd/a'
+                    director_xpath_2 = '/html/body/div[3]/div[2]/div/div[1]/div[7]/div/dl/div[1]/dd/a'
+                    try:
+                        director = self.driver.find_element(By.XPATH, director_xpath_1).text
+                    except NoSuchElementException:
+                        # 두 번째 XPath 시도
+                        try:
+                            director = self.driver.find_element(By.XPATH, director_xpath_2).text
+                        # 없는 경우 크롤링 제외(모달창 닫기)
+                        except NoSuchElementException:
+                            close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
+                            self.driver.find_element(By.XPATH, close_btn).click()
+                            continue
 
                     # 배우 가져오기
-                    actor_elements = self.driver.find_elements(By.XPATH,'/html/body/div[3]/div[2]/div/div[1]/div[6]/div/dl/div[2]/dd/table[1]/tbody/tr/td/a')
+                    actor_elements_1 = self.driver.find_elements(By.XPATH,
+                                                               '/html/body/div[3]/div[2]/div/div[1]/div[6]/div/dl/div[2]/dd/table[1]/tbody/tr/td/a')
+                    # actor_elements_2 = self.driver.find_elements(By.XPATH,
+                    #                                            '/html/body/div[3]/div[2]/div/div[1]/div[7]/div/dl/div[2]/dd/table[1]/tbody/tr/td/a')
+
                     actors_list = []
-                    for actor_element in actor_elements:
-                        actor_name = actor_element.text.split('(')[0].strip()
-                        actors_list.append(actor_name)
-                    actor = ', '.join(actors_list)
+                    try:
+                        for actor_element in actor_elements_1:
+                            actor_name = actor_element.text.split('(')[0].strip()
+                            actors_list.append(actor_name)
+                        actor = ', '.join(actors_list)
+                    except NoSuchElementException:
+                        # 두 번째 XPath 시도
+                        try:
+                            actor_elements_2 = self.driver.find_elements(By.XPATH,
+                                                                         '/html/body/div[3]/div[2]/div/div[1]/div[7]/div/dl/div[2]/dd/table[1]/tbody/tr/td/a')
+                            for actor_element in actor_elements_2:
+                                actor_name = actor_element.text.split('(')[0].strip()
+                                print(actor_name)
+                                actors_list.append(actor_name)
+                            actor = ', '.join(actors_list)
+                        # 없는 경우 크롤링 제외(모달창 닫기)
+                        except NoSuchElementException:
+                            close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
+                            self.driver.find_element(By.XPATH, close_btn).click()
+                            continue
 
                     # 장르 가져오기
                     genre_info_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[2]/dl/dd[4]'
-                    genre_info = self.driver.find_element(By.XPATH, genre_info_xpath).text
-                    genre_pattern = re.compile(r'\|\s*[^|]+\s*\|\s*([^|]+)\s*\|')
-                    match = genre_pattern.search(genre_info)
-                    genre = match.group(1).strip()
+                    try:
+                        genre_info = self.driver.find_element(By.XPATH, genre_info_xpath).text
+                        genre_pattern = re.compile(r'\|\s*[^|]+\s*\|\s*([^|]+)\s*\|')
+                        match = genre_pattern.search(genre_info)
+                        genre = match.group(1).strip()
+                    # 없는 경우 크롤링 제외(모달창 닫기)
+                    except NoSuchElementException:
+                        close_btn = '/html/body/div[3]/div[1]/div[1]/a[2]'
+                        self.driver.find_element(By.XPATH, close_btn).click()
+                        continue
 
                     # 이미지 가져오기
                     img_xpath = '/html/body/div[3]/div[2]/div/div[1]/div[2]/a'
