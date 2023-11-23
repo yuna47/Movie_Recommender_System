@@ -1,7 +1,24 @@
+import secrets
+
 from flask import Flask, render_template, request, redirect, url_for, session
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_migrate import Migrate
 
 
 app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@localhost:3306/movieflix'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = secrets.token_hex(16)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
 
 movies = [
     {
@@ -30,30 +47,28 @@ users = [
     {'username': 'user2', 'password': 'password2'},
 ]
 
-@app.route('/home')
-def home():
+@app.route('/main')
+def main():
     return render_template('main.html')
 
 
-@app.route('/login', methods=["get"])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
+    if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        user = next((user for user in users if user['username'] == username and user['password'] == password), None)
-        # 간단한 인증
-        if user:
-            # 로그인 성공 시 세션에 사용자 정보 저장
-            session['user'] = user
-            return render_template('main')
+        user = User.query.filter_by(username=username).first()
+
+        if user and user.password == password:
+            session['user'] = {'id': user.id, 'username': user.username}
+            return redirect(url_for('main'))
         else:
-            # 로그인 실패 시 에러 메시지 반환
             error = 'Invalid username or password'
             return render_template('login.html', error=error)
 
     return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():
@@ -67,22 +82,19 @@ def start():
 def signUp():
     if request.method == 'POST':
         username = request.form['username']
-        password = request.form['password']
         email = request.form['email']
-        confirm_password = request.form['confirm_password']
+        password = request.form['password']
 
-        # 간단한 유효성 검사
-        if not username or not password or not confirm_password:
-            return render_template('signup.html', error='모든 필드를 입력해주세요.')
+        if not username or not email or not password:
+            return render_template('signup.html', error='Please fill in all fields.')
 
-        if password != confirm_password:
-            return render_template('signup.html', error='비밀번호가 일치하지 않습니다.')
+        new_user = User(username=username, password=password)
+        db.session.add(new_user)
+        db.session.commit()
 
-        # 간단한 예시: 회원 정보를 리스트에 추가
-        users.append({'username': username, 'email': email, 'password': password})
+        return redirect(url_for('login'))
 
-        return redirect(url_for('/login'))
-    return render_template('signUp.html')
+    return render_template('signup.html')
 
 @app.route('/movieDetails/<int:data_movie_id>')
 def movieDetails(data_movie_id):
@@ -97,4 +109,6 @@ def movieDetails(data_movie_id):
     #     return redirect(url_for('not_found'))
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
