@@ -43,14 +43,20 @@ movies = [
     # ... (더 많은 영화 추가)
 ]
 
-users = [
-    {'username': 'user1', 'password': 'password1'},
-    {'username': 'user2', 'password': 'password2'},
-]
+# users = [
+#     {'username': 'user1', 'password': 'password1'}, e
+#     {'username': 'user2', 'password': 'password2'},
+# ]
 
 @app.route('/main')
 def main():
-    return render_template('main.html')
+    user_info = session.get('user')
+    if user_info:
+        username = user_info['username']
+        return render_template('main.html', username=username)
+    else:
+        # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
+        return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -83,8 +89,8 @@ def start():
 def signUp():
     if request.method == 'POST':
         username = request.form['username']
-        email = request.form['email']
         password = request.form['password']
+        email = request.form['email']
 
         if not username or not email or not password:
             return render_template('signup.html', error='Please fill in all fields.')
