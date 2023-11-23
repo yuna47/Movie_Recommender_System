@@ -19,6 +19,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
 
 movies = [
     {
@@ -42,10 +43,10 @@ movies = [
     # ... (더 많은 영화 추가)
 ]
 
-users = [
-    {'username': 'user1', 'password': 'password1'},
-    {'username': 'user2', 'password': 'password2'},
-]
+# users = [
+#     {'username': 'user1', 'password': 'password1'}, e
+#     {'username': 'user2', 'password': 'password2'},
+# ]
 
 @app.route('/main')
 def main():
@@ -82,13 +83,14 @@ def start():
 def signUp():
     if request.method == 'POST':
         username = request.form['username']
-        email = request.form['email']
         password = request.form['password']
+        email = request.form['email']
+
 
         if not username or not email or not password:
             return render_template('signup.html', error='Please fill in all fields.')
 
-        new_user = User(username=username, password=password)
+        new_user = User(username=username, password=password, email=email)
         db.session.add(new_user)
         db.session.commit()
 
