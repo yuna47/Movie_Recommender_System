@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,13 +12,19 @@
 </head>
 
 <body>
+    <div class = "header">
+        <h1>MovieFlix</h1>
+        <input type="text" placeholder="Search...">
+        <button id="logoutButton" >Logout</button>
+        <button id="homeButton">HOME</button>
+
+    </div>
     <div class="container">
         <div class="movie-details">
-            <img src="" alt="Movie Poster" id="moviePoster">
+            <img src="https://blog.kakaocdn.net/dn/bmIwxA/btrVE1Ql6YL/kfImMiXEd19Kch9ziopPj0/img.jpg" alt="Movie Poster" id="moviePoster">
             <div class="details">
-                <h2 id="movieTitle"></h2>
-                <p id="movieDescription"></p>
-                <button id="backButton">Back</button>
+                <h2 id="movieTitle">Movie Title</h2>
+                <p id="movieDescription">장르<br>감독<br>등장인물<br>줄거리<br></p>
             </div>
         </div>
     </div>
@@ -49,6 +56,7 @@
             document.getElementById('moviePoster').src = movieDetails.posterUrl;
             document.getElementById('movieDescription').innerText = movieDetails.description;
         }
+
     </script>
 
 </body>
