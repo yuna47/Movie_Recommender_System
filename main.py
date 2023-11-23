@@ -47,8 +47,8 @@ users = [
     {'username': 'user2', 'password': 'password2'},
 ]
 
-@app.route('/home')
-def home():
+@app.route('/main')
+def main():
     return render_template('main.html')
 
 
@@ -60,11 +60,7 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
-        print(f"User: {user.username}")
-        print(f"Userpw: {user.password}")
-
-
-        if user and check_password_hash(user.password, password):
+        if user and user.password == password:
             session['user'] = {'id': user.id, 'username': user.username}
             return redirect(url_for('main'))
         else:
@@ -92,8 +88,7 @@ def signUp():
         if not username or not email or not password:
             return render_template('signup.html', error='Please fill in all fields.')
 
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User(username=username, password=hashed_password)
+        new_user = User(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
 
