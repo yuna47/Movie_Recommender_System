@@ -1097,22 +1097,26 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <index id="302" parent="298" name="PRIMARY">
+    <column id="302" parent="298" name="email">
+      <DataType>varchar(80)|0s</DataType>
+      <Position>4</Position>
+    </column>
+    <index id="303" parent="298" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="303" parent="298" name="username">
+    <index id="304" parent="298" name="username">
       <ColNames>username</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="304" parent="298" name="PRIMARY">
+    <key id="305" parent="298" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="305" parent="298" name="username">
+    <key id="306" parent="298" name="username">
       <UnderlyingIndexName>username</UnderlyingIndexName>
     </key>
   </database-model>

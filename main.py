@@ -8,17 +8,18 @@ from flask_migrate import Migrate
 
 app = Flask(__name__)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@localhost:3306/movieflix'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SECRET_KEY'] = secrets.token_hex(16)
-# db = SQLAlchemy(app)
-# migrate = Migrate(app, db)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@localhost:3306/movieflix'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = secrets.token_hex(16)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.String(80), unique=True, nullable=False)
-#     password = db.Column(db.String(255), nullable=False)
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
 
 movies = [
     {
@@ -88,7 +89,7 @@ def signUp():
         if not username or not email or not password:
             return render_template('signup.html', error='Please fill in all fields.')
 
-        new_user = User(username=username, password=password)
+        new_user = User(username=username, email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
 
@@ -109,6 +110,6 @@ def movieDetails(data_movie_id):
     #     return redirect(url_for('not_found'))
 
 if __name__ == '__main__':
-    # with app.app_context():
-        # db.create_all()
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
