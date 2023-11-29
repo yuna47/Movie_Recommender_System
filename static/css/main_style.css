@@ -1,6 +1,8 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
+    background-color: #000000;
+    padding: 0;
+	margin: 0;
 }
 
 .header {
@@ -26,6 +28,11 @@ body {
     color: #ff0000;
 }
 
+.welcome{
+    color: white;
+    margin: 20px;
+}
+
 #logoutButton {
     padding: 10px 20px;
     font-size: 16px;
@@ -44,26 +51,25 @@ body {
     background-color: #45a049;
 }
 
-.movie-posters {
+movie-posters {
     display: flex;
-    flex-direction: row; /* 수정된 부분: 포스터를 수평으로 나열 */
+    flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
     margin-top: 20px;
 }
 
-.movie-poster img {
-    min-width: 30%;
-    max-width: 40%;
+.movie img {
+    width: calc(100% / 8 - 10px); /* 한 행에 8개씩 정렬, 간격은 10px로 조절 */
     height: auto;
     border-radius: 10px;
-    margin-right: 0px
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.movie-poster p {
-    margin: 10px 0;
-    font-size: 16px;
+.movie {
+    flex: 0 0 calc(12.5% - 10px);
+    box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
 /* 예시: 영화 상세 정보 모달 스타일 */
