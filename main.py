@@ -20,8 +20,8 @@ migrate = Migrate(app, db)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
 
 
 def read_csv(file_path):
@@ -84,7 +84,7 @@ def signUp():
         if not username or not email or not password:
             return render_template('signup.html', error='Please fill in all fields.')
 
-        new_user = User(username=username, password=password, email=email)
+        new_user = User(username=username, email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
 
