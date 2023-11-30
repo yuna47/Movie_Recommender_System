@@ -33,7 +33,7 @@ def resize_and_save_image(image_url, output_path, target_size=(200, 300), qualit
 
 def index():
     # CSV 파일 읽기
-    input_csv = './movie_crawl/output/movie2.csv'
+    input_csv = './movie_crawl/output/movie.csv'
     output_csv = './movie_crawl/output/movie_resized.csv'
     with open(input_csv, 'r', encoding='utf-8-sig') as infile, open(output_csv, 'w', newline='', encoding='utf-8-sig') as outfile:
         reader = csv.DictReader(infile)

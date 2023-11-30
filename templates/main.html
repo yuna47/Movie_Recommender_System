@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main_style.css') }}">
 </head>
 <body>
-    <div class = "header">
+    <div class="header">
         <h1>MovieFlix</h1>
+        <h1 id="allMovie">모든 영화</h1>
         <input type="text" placeholder="Search...">
         <button id="logoutButton" >Logout</button>
 
@@ -30,6 +31,10 @@
     </div>
 
         <script>
+            document.getElementById('allMovie').addEventListener('click', function() {
+                window.location.href = "{{ url_for('allMovie') }}";
+            });
+
             // 버튼 클릭 이벤트 처리
             document.getElementById('logoutButton').addEventListener('click', function() {
                 window.location.href = "{{ url_for('start') }}";

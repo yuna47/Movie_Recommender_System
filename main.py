@@ -30,14 +30,17 @@ def read_csv(file_path):
         movies = list(reader)
     return movies
 
+@app.route('/allMovie')
+def allMovie():
+    movies = read_csv('./movie_crawl/output/movie_resized.csv')  # CSV 파일 읽기 함수 호출
+    return render_template('allMovie.html',  movies=movies)
 
 @app.route('/main')
 def main():
-    movies = read_csv('./movie_crawl/output/movie_resized.csv')  # CSV 파일 읽기 함수 호출
     user_info = session.get('user')
     if user_info:
         username = user_info['username']
-        return render_template('main.html', username=username, movies=movies)
+        return render_template('main.html', username=username)
     else:
         # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
         return redirect(url_for('login'))

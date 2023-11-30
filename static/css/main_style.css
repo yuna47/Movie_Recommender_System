@@ -22,15 +22,21 @@ body {
 
 .header h1 {
     margin: 0;
-}
-
-.header h1 {
     color: #ff0000;
+    cursor: pointer;
 }
 
-.welcome{
+#allMovie {
+    color: white;
+    cursor: pointer;
+    margin-left: 20px;
+    font-size: 20px;
+}
+
+.welcome {
     color: white;
     margin: 20px;
+    cursor: default;
 }
 
 #logoutButton {
@@ -51,18 +57,16 @@ body {
     background-color: #45a049;
 }
 
-movie-posters {
+.movie-posters {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    justify-content: space-between; /* 중앙 정렬 대신 각 요소 사이에 공간 배분 */
     margin-top: 20px;
 }
 
 .movie img {
-    width: calc(100% / 8 - 10px); /* 한 행에 8개씩 정렬, 간격은 10px로 조절 */
+    width: calc(100%/8); /* 한 행에 8개씩 정렬, 간격은 10px로 조절 */
     height: auto;
-    border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
