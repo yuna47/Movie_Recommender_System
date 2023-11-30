@@ -8,6 +8,7 @@ body {
 .header {
     background-color: #333;
     color: #fff;
+    cursor: default;
     padding: 10px;
     display: flex;
     flex-direction: row; /* 가로 방향으로 정렬 */
@@ -29,7 +30,6 @@ body {
 #allMovie {
     color: white;
     cursor: pointer;
-    margin-left: 20px;
     font-size: 20px;
 }
 
