@@ -1,11 +1,14 @@
 body {
     font-family: 'Arial', sans-serif;
     background-color: #000000;
+    padding: 0;
+	margin: 0;
 }
 
 .header {
     background-color: #333;
     color: #fff;
+    cursor: default;
     padding: 10px;
     display: flex;
     flex-direction: row; /* 가로 방향으로 정렬 */
@@ -20,10 +23,20 @@ body {
 
 .header h1 {
     margin: 0;
+    color: #ff0000;
+    cursor: pointer;
 }
 
-.header h1 {
-    color: #ff0000;
+#allMovie {
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.welcome {
+    color: white;
+    margin: 20px;
+    cursor: default;
 }
 
 #logoutButton {
@@ -44,29 +57,51 @@ body {
     background-color: #45a049;
 }
 
-.movie-poster {
-    width: calc((100% - 20px * 2) / 3); /* 각 포스터의 너비를 조정하여 세 개가 한 줄에 배치되도록 설정 */
+.movie-posters {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: auto;
+    flex-wrap: wrap;
+    justify-content: space-between; /* 중앙 정렬 대신 각 요소 사이에 공간 배분 */
+    margin-top: 20px;
 }
 
-.movie-poster img {
-    max-width: 150px;
+.movie img {
+    width: calc(100%/8); /* 한 행에 8개씩 정렬, 간격은 10px로 조절 */
+    height: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.movie {
+    flex: 0 0 calc(12.5% - 10px);
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+/* 예시: 영화 상세 정보 모달 스타일 */
+#movieDetailModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+#movieDetailModal img {
+    max-width: 100%;
     height: auto;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.movie-posters {
-    width: fit-content; /* 이미지 크기에 맞게 div 크기 조정 */
-    height: fit-content; /* 이미지 크기에 맞게 div 크기 조정 */
-    display: flex;
-    justify-content: center;
-    gap: 50px; /* 포스터 사이의 간격 */
-    margin-top: 20px;
-    margin-left: auto; /* 가로 여백을 자동으로 설정하여 가운데 정렬 */
-    margin-right: auto; /* 가로 여백을 자동으로 설정하여 가운데 정렬 */
-    /*overflow-x: auto;*/
+.movie-poster img:last-child {
+    margin-right: 0; /* 마지막 포스터에는 마진을 적용하지 않음 */
+}
+
+#movieDetailModal p {
+    margin: 10px 0;
+    font-size: 18px;
 }

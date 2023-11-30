@@ -1,10 +1,12 @@
+import csv
+import os
 import secrets
+from tkinter import Image
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
-
 
 app = Flask(__name__)
 
@@ -21,32 +23,17 @@ class User(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
 
-movies = [
-    {
-        'id': 1,
-        'title': 'Inception',
-        'poster': 'https://example.com/poster1.jpg',
-        'description': 'A thief enters the dreams of others to steal their secrets.',
-        'genre': 'Sci-Fi',
-        'release_date': '2010-07-16',
-        'rating': 8.8
-    },
-    {
-        'id': 2,
-        'title': 'The Dark Knight',
-        'poster': 'https://example.com/poster2.jpg',
-        'description': 'Batman faces the Joker, a criminal mastermind with a dark sense of humor.',
-        'genre': 'Action',
-        'release_date': '2008-07-18',
-        'rating': 9.0
-    },
-    # ... (더 많은 영화 추가)
-]
 
-# users = [
-#     {'username': 'user1', 'password': 'password1'}, e
-#     {'username': 'user2', 'password': 'password2'},
-# ]
+def read_csv(file_path):
+    with open(file_path, 'r', encoding='utf-8-sig') as file:
+        reader = csv.DictReader(file)
+        movies = list(reader)
+    return movies
+
+@app.route('/allMovie')
+def allMovie():
+    movies = read_csv('./movie_crawl/output/movie_resized.csv')  # CSV 파일 읽기 함수 호출
+    return render_template('allMovie.html',  movies=movies)
 
 @app.route('/main')
 def main():
@@ -81,9 +68,11 @@ def login():
 def logout():
     pass
 
+
 @app.route('/')
 def start():
     return render_template('start.html')
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signUp():
@@ -103,6 +92,7 @@ def signUp():
 
     return render_template('signup.html')
 
+
 @app.route('/movieDetails/<int:data_movie_id>')
 def movieDetails(data_movie_id):
     # 해당 ID의 영화를 찾음
@@ -114,6 +104,7 @@ def movieDetails(data_movie_id):
     # else:
     #     # 찾지 못한 경우 404 에러 페이지로 리다이렉션
     #     return redirect(url_for('not_found'))
+
 
 if __name__ == '__main__':
     with app.app_context():

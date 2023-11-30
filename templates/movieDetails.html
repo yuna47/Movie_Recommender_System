@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,19 +11,25 @@
 </head>
 
 <body>
-    <div class = "header">
-        <h1>MovieFlix</h1>
-        <input type="text" placeholder="Search...">
-        <button id="logoutButton" >Logout</button>
-        <button id="homeButton">HOME</button>
-
-    </div>
     <div class="container">
         <div class="movie-details">
-            <img src="https://blog.kakaocdn.net/dn/bmIwxA/btrVE1Ql6YL/kfImMiXEd19Kch9ziopPj0/img.jpg" alt="Movie Poster" id="moviePoster">
+            <div class="movie-posters">
+                {% for movie in movies %}
+                    <div class="movie">
+        <!--                <p><strong>제목:</strong> {{ movie['Title'] }}</p>-->
+        <!--                <p><strong>장르:</strong> {{ movie['Genre'] }}</p>-->
+        <!--                <p><strong>감독:</strong> {{ movie['Director'] }}</p>-->
+        <!--                <p><strong>배우:</strong> {{ movie['Actor'] }}</p>-->
+        <!--                <p><strong>시놉시스:</strong> {{ movie['Synopsis'] }}</p>-->
+                        <img src="{{ movie['Img'] }}" alt="{{ movie['Title'] }} 이미지">
+                    </div>
+                {% endfor %}
+            </div>
+            <img src="" alt="Movie Poster" id="moviePoster">
             <div class="details">
-                <h2 id="movieTitle">Movie Title</h2>
-                <p id="movieDescription">장르<br>감독<br>등장인물<br>줄거리<br></p>
+                <h2 id="movieTitle"></h2>
+                <p id="movieDescription"></p>
+                <button id="backButton">Back</button>
             </div>
         </div>
     </div>
@@ -56,7 +61,6 @@
             document.getElementById('moviePoster').src = movieDetails.posterUrl;
             document.getElementById('movieDescription').innerText = movieDetails.description;
         }
-
     </script>
 
 </body>

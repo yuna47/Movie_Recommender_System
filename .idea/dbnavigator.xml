@@ -20,9 +20,7 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="4acd95f4-c8f8-4caa-8248-9d4d88d76256" object-ref="schemas/movieflix/tables/user" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="4acd95f4-c8f8-4caa-8248-9d4d88d76256" dataset="movieflix.user" active-filter-id="EMPTY_FILTER" />
