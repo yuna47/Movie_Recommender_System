@@ -2,24 +2,29 @@
 .header {
     background-color: #333;
     color: #fff;
+    cursor: default;
     padding: 10px;
     display: flex;
     flex-direction: row; /* 가로 방향으로 정렬 */
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 }
+
 .header input[type="text"] {
     padding: 5px;
-    /*margin-right: 10px;*/
-    margin: 0 auto;
+    margin-right: 10px;
 }
 
 .header h1 {
     margin: 0;
+    color: #ff0000;
+    cursor: pointer;
 }
 
-.header h1 {
-    color: #ff0000;
+#allMovie {
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
 }
 
 

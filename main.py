@@ -24,16 +24,22 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
 
 
-def read_csv(file_path):
-    with open(file_path, 'r', encoding='utf-8-sig') as file:
-        reader = csv.DictReader(file)
-        movies = list(reader)
-    return movies
+class Movie(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    genre = db.Column(db.String(255), nullable=False)
+    director = db.Column(db.String(255), nullable=False)
+    actor = db.Column(db.Text, nullable=False)
+    synopsis = db.Column(db.Text, nullable=False)
+    img = db.Column(db.String(255), nullable=False)
+
+
 
 @app.route('/allMovie')
 def allMovie():
-    movies = read_csv('./movie_crawl/output/movie_resized.csv')  # CSV 파일 읽기 함수 호출
-    return render_template('allMovie.html',  movies=movies)
+    movie = Movie.query.all()
+    return render_template('allMovie.html',  movie=movie)
+
 
 @app.route('/main')
 def main():
@@ -97,13 +103,6 @@ def signUp():
 def movieDetails(data_movie_id):
     # 해당 ID의 영화를 찾음
     return render_template('movieDetails.html', movie_id=data_movie_id)
-    # movie = next((m for m in movies if m['id'] == movie_id), None)
-
-    # if movie:
-    #     return render_template('MovieDetails.html', movie=movie)
-    # else:
-    #     # 찾지 못한 경우 404 에러 페이지로 리다이렉션
-    #     return redirect(url_for('not_found'))
 
 
 if __name__ == '__main__':
