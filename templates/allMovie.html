@@ -19,9 +19,9 @@
     </div>
 
     <div class="movie-posters">
-        {% for movie in movies %}
+        {% for movie in movie %}
             <div class="movie-poster">
-                <img src="{{ movie['img'] }}" alt="{{ movie['id'] }} 이미지">
+                <img src="{{ movie.img }}" alt="{{ movie.id }} 이미지">
             </div>
         {% endfor %}
     </div>
