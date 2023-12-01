@@ -33,25 +33,25 @@ def resize_and_save_image(image_url, output_path, target_size=(200, 300), qualit
 
 def index():
     # CSV 파일 읽기
-    input_csv = './movie_crawl/output/movie.csv'
-    output_csv = './movie_crawl/output/movie_resized.csv'
+    input_csv = './movie_crawl/output/movie2.csv'  # 원본 이미지 포함 csv
+    output_csv = './movie_crawl/output/movie.csv'
     with open(input_csv, 'r', encoding='utf-8-sig') as infile, open(output_csv, 'w', newline='', encoding='utf-8-sig') as outfile:
         reader = csv.DictReader(infile)
-        fieldnames = reader.fieldnames + ['ResizedImg']  # 새로운 필드 추가
+        fieldnames = reader.fieldnames  # 새로운 필드 추가하지 않음
 
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
 
-        for row in reader:
+        for index, row in enumerate(reader, start=1):
             # 각 행의 이미지 URL과 저장할 경로를 지정
-            image_url = row['Img']
-            output_path = f"./static/image_resized/{row['ID']}_resized.jpg"
+            image_url = row['img']
+            output_path = f"./static/image_resized/{index}.jpg"  # 행의 순서에 따른 인덱스 사용
 
             # 이미지 리사이즈 및 저장
             resize_and_save_image(image_url, output_path)
 
-            # 새로운 필드에 리사이즈된 이미지 경로 추가
-            row['ResizedImg'] = output_path
+            # 이미 있는 'img' 필드의 값을 새로운 경로로 갱신
+            row['img'] = output_path
 
             # 새로운 행을 CSV 파일에 추가
             writer.writerow(row)
