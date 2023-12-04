@@ -104,6 +104,10 @@ def movieDetails(data_movie_id):
     # 해당 ID의 영화를 찾음
     return render_template('movieDetails.html', movie_id=data_movie_id)
 
+@app.route('/myfavoGenre')
+def myGenre():
+    return render_template('my_genre_taste.html')
+
 
 if __name__ == '__main__':
     with app.app_context():
