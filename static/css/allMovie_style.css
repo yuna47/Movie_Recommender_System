@@ -98,14 +98,6 @@ body {
 }
 
 .dark-overlay {
-    background-color: rgba(0, 0, 0, 0.7);
-    transition: background-color 0.3s ease;
-}
-
-.dark-overlay #movieDetailModal {
-    z-index: 1001; /* 모달이 어둡게 된 배경 위에 나타나도록 조절 */
-}
-
-.dark-overlay body.modal-opened {
-    overflow: hidden;
+    background: rgba(0, 0, 0, 0.5); /* 어두운 배경의 색상과 투명도 조절 */
+    overflow: hidden; /* 스크롤이 생길 경우 스크롤을 감추도록 함 */
 }
