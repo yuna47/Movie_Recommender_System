@@ -1,7 +1,9 @@
 import csv
+import os
 import secrets
+from tkinter import Image
 
-from flask import Flask, render_template, request, redirect, url_for, session, Blueprint
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
@@ -109,6 +111,15 @@ def signUp():
     return render_template('signUp.html')
 
 
+@app.route('/movieDetails/<int:data_movie_id>')
+def movieDetails(data_movie_id):
+    # 해당 ID의 영화를 찾음
+    return render_template('movieDetails.html', movie_id=data_movie_id)
+
+@app.route('/myfavoGenre')
+def myGenre():
+    return render_template('my_favorite_genre.html')
+
 # CSV 파일에서 데이터를 읽어와 데이터베이스에 삽입하는 함수
 @app.route('/')
 def insert_data_from_csv(csv_file_path):
@@ -123,6 +134,28 @@ def insert_data_from_csv(csv_file_path):
         # 변경사항을 데이터베이스에 커밋
         db.session.commit()
 
+
+
+# # CSV 파일에서 데이터를 읽어와 데이터베이스에 삽입하는 함수
+# @app.route('/')
+# def insert_data_from_csv(csv_file_path):
+#     with open(csv_file_path, 'r', encoding='utf-8-sig') as csvfile:
+#         csv_reader = csv.DictReader(csvfile)
+#         for row in csv_reader:
+#             # CSV 파일에서 읽어온 각 행을 데이터베이스에 삽입
+#             movie = Movie(title=row['title'], genre=row['genre'], director=row['director'],
+#                           actor=row['actor'], synopsis=row['synopsis'], img=row['img'])
+#             db.session.add(movie)
+#
+#         # 변경사항을 데이터베이스에 커밋
+#         db.session.commit()
+#
+#
+# if __name__ == '__main__':
+#     with app.app_context():
+#         db.create_all()
+#         insert_data_from_csv('./movie_crawl/output/movie.csv')
+#     app.run(debug=True)
 
 if __name__ == '__main__':
     with app.app_context():
