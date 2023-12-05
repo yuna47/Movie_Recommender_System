@@ -23,7 +23,7 @@
 
     <div class="movie-posters">
         {% for movie in movies %}
-        <div class="movie-poster" data-toggle="modal" data-target="#movieDetailModal" data-movie-id="{{ movie.id }}">
+        <div class="movie-poster" data-movie-id="{{ movie.id }}">
             <img src="{{ movie.img }}" alt="{{ movie.id }} 이미지">
         </div>
         {% endfor %}
@@ -43,50 +43,65 @@
     </div>
 
     <script>
-        $(document).ready(function () {
-            document.getElementById('mainLink').addEventListener('click', function () {
-                window.location.href = "{{ url_for('main') }}";
-            });
+        document.getElementById('mainLink').addEventListener('click', function () {
+            window.location.href = "{{ url_for('main') }}";
+        });
 
-            document.getElementById('logoutButton').addEventListener('click', function () {
-                window.location.href = "{{ url_for('start') }}";
-            });
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            window.location.href = "{{ url_for('start') }}";
+        });
 
-            document.querySelectorAll('.movie-poster').forEach(function (poster) {
-                poster.addEventListener('click', function () {
-                    var movieId = this.getAttribute('data-movie-id');
-                    showMovieDetails(movieId);
-                });
+        document.querySelectorAll('.movie-poster').forEach(function (poster) {
+            poster.addEventListener('click', function () {
+                var movieId = parseInt(this.getAttribute('data-movie-id'), 10);
+                // 모달을 열기 위해 showMovieDetails 함수 호출
+                showMovieDetails(movieId);
             });
+        });
 
-            function showMovieDetails(movieId) {
-                // Ajax를 사용하여 서버에서 콘텐츠 정보를 가져오기
-                $.ajax({
-                    url: "{{ url_for('get_movie_details') }}",
-                    method: 'POST',
-                    data: { 'movie_id': movieId },
-                    success: function (response) {
-                        // 가져온 정보를 모달에 표시
-                        document.getElementById('modal-content').innerHTML = response;
-                        // 모달 열기
-                        $('#movieDetailModal').modal('show'); // 여기 수정
-                    },
-                    error: function (error) {
-                        console.error('Error fetching movie details:', error);
-                    }
-                });
+        function showMovieDetails(movieId) {
+            // Ajax를 사용하여 서버에서 콘텐츠 정보를 가져오기
+            $.ajax({
+                url: "{{ url_for('get_movie_details', movie_id=0) }}" + movieId,  // 여기 수정
+                method: 'GET',  // 여기 수정
+                success: function (response) {
+                    // 가져온 정보를 모달에 표시
+                    document.getElementById('modal-content').innerHTML = response;
+                    // 모달 열기
+                    $('#movieDetailModal').modal('show');
+
+                    // 모달 내부에서의 클릭 처리를 위해 이벤트 바인딩
+                    $('#modal-content .modal-poster').on('click', function () {
+                        // 모달 내부에서의 클릭 처리
+                        var movieIdInModal = parseInt($(this).attr('data-movie-id'), 10);
+                        window.location.href = "/movie/" + movieIdInModal;
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching movie details:', error);
+                }
+            });
+        }
+
+        // 모달이 열릴 때 배경에 효과 추가
+        $('#movieDetailModal').on('show.bs.modal', function () {
+            // 모달 열 때만 어둡게 만들기
+            $('.movie-posters, .header').addClass('dark-overlay');
+        });
+
+        // 모달이 닫힐 때 배경 효과 제거
+        $('#movieDetailModal').on('hidden.bs.modal', function () {
+            // 모달이 닫힐 때 어둡게 만든 효과 제거
+            $('.movie-posters, .header').removeClass('dark-overlay');
+            document.getElementById('modal-content').innerHTML = "";
+        });
+
+        // 모달 외의 영역 클릭 시 모달 닫기
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('#movieDetailModal').length === 0) {
+                // 모달 외의 영역을 클릭하면 모달 닫기
+                $('#movieDetailModal').modal('hide');
             }
-
-            // 모달이 열릴 때 배경에 효과 추가
-            $('#movieDetailModal').on('show.bs.modal', function () {
-                $('body').addClass('modal-opened');
-            });
-
-            // 모달이 닫힐 때 배경 효과 제거
-            $('#movieDetailModal').on('hidden.bs.modal', function () {
-                $('body').removeClass('modal-opened');
-                document.getElementById('modal-content').innerHTML = "";
-            });
         });
     </script>
 </body>

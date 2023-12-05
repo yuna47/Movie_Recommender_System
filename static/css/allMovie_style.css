@@ -74,23 +74,18 @@ body {
 #movieDetailModal {
     display: none;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.7); /* 검은색 배경 투명도 조절 */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0);
     z-index: 1000;
     color: #fff;
-    width: 60%; /* 모달창 너비 조절 */
 }
 
 #movieDetailModal img {
     max-width: 100%;
     height: auto;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .movie-poster img:last-child {
@@ -100,4 +95,17 @@ body {
 #movieDetailModal p {
     margin: 10px 0;
     font-size: 18px;
+}
+
+.dark-overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: background-color 0.3s ease;
+}
+
+.dark-overlay #movieDetailModal {
+    z-index: 1001; /* 모달이 어둡게 된 배경 위에 나타나도록 조절 */
+}
+
+.dark-overlay body.modal-opened {
+    overflow: hidden;
 }

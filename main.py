@@ -1,7 +1,7 @@
 import csv
 import secrets
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
@@ -37,16 +37,14 @@ def allMovie():
     return render_template('allMovie.html',  movies=movies)
 
 
-@app.route('/get_movie_details', methods=['POST'])
-def get_movie_details():
-    movie_id = request.form.get('movie_id')
-
+@app.route('/movie/<int:movie_id>')
+def get_movie_details(movie_id):
     # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
-    movie = db.session.get(Movie, movie_id)
+    movie = Movie.query.get(movie_id)
 
     if movie:
         # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
-        return render_template('get_movie_details.html', movie=movie)
+        return render_template('movie_details.html', movie=movie)
     else:
         # 영화 정보가 없는 경우, 에러 메시지 또는 기본 정보를 반환
         return "영화 정보를 찾을 수 없습니다."
