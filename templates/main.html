@@ -46,16 +46,6 @@
                     showMovieDetails(movieId);
                 });
             });
-
-            function showMovieDetails(movieId) {
-                // 클릭한 영화의 상세 정보 페이지로 이동
-
-                window.location.href = "{{ url_for('movieDetails', data_movie_id='1') }}" + movieId;
-            }
-
-
         </script>
-
-
 </body>
 </html>
