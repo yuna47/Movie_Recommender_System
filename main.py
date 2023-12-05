@@ -37,7 +37,7 @@ def allMovie():
     return render_template('allMovie.html',  movies=movies)
 
 
-@app.route('/movie/<int:movie_id>')
+@app.route('/allMovie/<int:movie_id>')
 def get_movie_details(movie_id):
     # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
     movie = Movie.query.get(movie_id)

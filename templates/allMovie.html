@@ -29,7 +29,8 @@
         {% endfor %}
     </div>
 
-    <div class="modal" id="movieDetailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal" id="movieDetailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-header">
             </div>
@@ -51,31 +52,19 @@
             window.location.href = "{{ url_for('start') }}";
         });
 
-        document.querySelectorAll('.movie-poster').forEach(function (poster) {
-            poster.addEventListener('click', function () {
-                var movieId = parseInt(this.getAttribute('data-movie-id'), 10);
-                // 모달을 열기 위해 showMovieDetails 함수 호출
-                showMovieDetails(movieId);
-            });
-        });
-
-        function showMovieDetails(movieId) {
+        function openModalWithUrl(url) {
             // Ajax를 사용하여 서버에서 콘텐츠 정보를 가져오기
             $.ajax({
-                url: "{{ url_for('get_movie_details', movie_id=0) }}" + movieId,  // 여기 수정
-                method: 'GET',  // 여기 수정
+                url: url,
+                method: 'GET',
                 success: function (response) {
                     // 가져온 정보를 모달에 표시
                     document.getElementById('modal-content').innerHTML = response;
                     // 모달 열기
                     $('#movieDetailModal').modal('show');
 
-                    // 모달 내부에서의 클릭 처리를 위해 이벤트 바인딩
-                    $('#modal-content .modal-poster').on('click', function () {
-                        // 모달 내부에서의 클릭 처리
-                        var movieIdInModal = parseInt($(this).attr('data-movie-id'), 10);
-                        window.location.href = "/movie/" + movieIdInModal;
-                    });
+                    // URL 업데이트
+                    window.history.pushState({ path: url }, '', url);
                 },
                 error: function (error) {
                     console.error('Error fetching movie details:', error);
@@ -83,17 +72,31 @@
             });
         }
 
+        document.querySelectorAll('.movie-poster').forEach(function (poster) {
+            poster.addEventListener('click', function () {
+                var movieId = this.getAttribute('data-movie-id');
+                var modalUrl = "/allMovie/" + movieId;
+
+                // 모달 열기 및 URL 업데이트
+                openModalWithUrl(modalUrl);
+            });
+        });
+
         // 모달이 열릴 때 배경에 효과 추가
         $('#movieDetailModal').on('show.bs.modal', function () {
             // 모달 열 때만 어둡게 만들기
             $('.movie-posters, .header').addClass('dark-overlay');
         });
 
-        // 모달이 닫힐 때 배경 효과 제거
+        // 모달이 닫힐 때 URL 원복
         $('#movieDetailModal').on('hidden.bs.modal', function () {
             // 모달이 닫힐 때 어둡게 만든 효과 제거
             $('.movie-posters, .header').removeClass('dark-overlay');
             document.getElementById('modal-content').innerHTML = "";
+
+            // URL 원복 (새로고침 없이)
+            var originalUrl = "{{ url_for('allMovie') }}";
+            window.history.pushState({ path: originalUrl }, '', originalUrl);
         });
 
         // 모달 외의 영역 클릭 시 모달 닫기
@@ -103,7 +106,6 @@
                 $('#movieDetailModal').modal('hide');
             }
         });
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>
