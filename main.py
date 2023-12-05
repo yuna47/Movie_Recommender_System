@@ -9,7 +9,7 @@ from flask_migrate import Migrate
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@localhost:3306/movieflix'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@210.117.128.202:3306/movieflix'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 db = SQLAlchemy(app)
@@ -54,13 +54,15 @@ def get_movie_details(movie_id):
 
 @app.route('/main')
 def main():
+    movie = Movie.query.all()
     user_info = session.get('user')
     if user_info:
         username = user_info['username']
-        return render_template('main.html', username=username)
+        return render_template('main.html', username=username, movie=movie)
     else:
         # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
         return redirect(url_for('login'))
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
