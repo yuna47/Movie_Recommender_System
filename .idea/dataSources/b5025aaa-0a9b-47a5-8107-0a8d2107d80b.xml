@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="Movieflix">
-  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.48">
+  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.49">
     <root id="1"/>
     <collation id="2" parent="1" name="armscii8_bin">
       <Charset>armscii8</Charset>
@@ -942,22 +942,18 @@
     </table>
     <column id="299" parent="298" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
     <column id="300" parent="298" name="username">
-      <DataType>varchar(80)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
     <column id="301" parent="298" name="password">
-      <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
     <column id="302" parent="298" name="email">
-      <DataType>varchar(80)|0s</DataType>
       <Position>4</Position>
     </column>
     <index id="303" parent="298" name="PRIMARY">
