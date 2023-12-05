@@ -10,34 +10,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main_style.css') }}">
 </head>
 <body>
-
-    <div id="load">
-      <img src="/assets/images/loading.gif" alt="loading">
-    </div>
-    <!-- 로딩 완료 후 표시할 이미지를 숨겨둡니다. -->
-    <img src="{{ url_for('static', filename='css/images/loading.gif') }}" alt="Your Image" id="loadedImage" style="display: none;">
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-
     <div class="header">
         <h1>MovieFlix</h1>
         <h1 id="allMovie">모든 영화</h1>
         <input type="text" placeholder="Search...">
         <button id="logoutButton" >Logout</button>
     </div>
-
-
     <div class="welcome">
         <h1>{{username}}님의 취향저격 베스트 콘텐츠</h1>
+        <p>Welcome to the main page!</p>
     </div>
 
     <div class="movie-posters">
-        {% for movie in movie[:10] %}
+        {% for movie in movies %}
             <div class="movie-poster">
-                <img src="{{ movie.img }}" alt="{{ movie.id }} 이미지">
+                <img src="{{ movie['ResizedImg'] }}" alt="{{ movie['ID'] }} 이미지">
             </div>
         {% endfor %}
     </div>
-
 
         <script>
             document.getElementById('allMovie').addEventListener('click', function() {
@@ -59,21 +49,10 @@
 
             function showMovieDetails(movieId) {
                 // 클릭한 영화의 상세 정보 페이지로 이동
+
                 window.location.href = "{{ url_for('movieDetails', data_movie_id='1') }}" + movieId;
             }
 
-
-            document.addEventListener("DOMContentLoaded", function() {
-              const loading_page = document.getElementById("load");
-
-              // Show loading page
-              loading_page.style.display = 'block';
-
-              // Hide loading page after 5 seconds
-              setTimeout(function() {
-                loading_page.style.display = 'none';
-              }, 1000); // 5000 milliseconds = 5 seconds
-            });
 
         </script>
 
