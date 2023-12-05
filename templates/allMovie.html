@@ -1,4 +1,4 @@
-<!-- templates/main.html -->
+<!-- templates/allMovie.html -->
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -6,52 +6,89 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
+    <title>allMovie Page</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/allMovie_style.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
+
 <body>
     <div class="header">
         <h1 id="mainLink">MovieFlix</h1>
         <h1 id="allMovie">모든 영화</h1>
         <input type="text" placeholder="Search...">
-        <button id="logoutButton" >Logout</button>
-
+        <button id="logoutButton">Logout</button>
     </div>
 
     <div class="movie-posters">
-        {% for movie in movie %}
-            <div class="movie-poster">
-                <img src="{{ movie.img }}" alt="{{ movie.id }} 이미지">
-            </div>
+        {% for movie in movies %}
+        <div class="movie-poster" data-toggle="modal" data-target="#movieDetailModal" data-movie-id="{{ movie.id }}">
+            <img src="{{ movie.img }}" alt="{{ movie.id }} 이미지">
+        </div>
         {% endfor %}
     </div>
-        <script>
-            // 홈 링크에 클릭 이벤트 추가
-            document.getElementById('mainLink').addEventListener('click', function() {
+
+    <div class="modal" id="movieDetailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-header">
+            </div>
+
+            <div class="modal-body" id="modal-content">
+            </div>
+
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            document.getElementById('mainLink').addEventListener('click', function () {
                 window.location.href = "{{ url_for('main') }}";
             });
 
-            // 버튼 클릭 이벤트 처리
-            document.getElementById('logoutButton').addEventListener('click', function() {
+            document.getElementById('logoutButton').addEventListener('click', function () {
                 window.location.href = "{{ url_for('start') }}";
             });
 
-            // 영화 포스터 클릭 이벤트 처리
-            document.querySelectorAll('.movie-poster').forEach(function(poster) {
-                poster.addEventListener('click', function() {
-                    var movieId = this.getAttribute('data_movie_id');
+            document.querySelectorAll('.movie-poster').forEach(function (poster) {
+                poster.addEventListener('click', function () {
+                    var movieId = this.getAttribute('data-movie-id');
                     showMovieDetails(movieId);
                 });
             });
 
             function showMovieDetails(movieId) {
-                // 클릭한 영화의 상세 정보 페이지로 이동
-
-                window.location.href = "{{ url_for('movieDetails', data_movie_id='1') }}" + movieId;
+                // Ajax를 사용하여 서버에서 콘텐츠 정보를 가져오기
+                $.ajax({
+                    url: "{{ url_for('get_movie_details') }}",
+                    method: 'POST',
+                    data: { 'movie_id': movieId },
+                    success: function (response) {
+                        // 가져온 정보를 모달에 표시
+                        document.getElementById('modal-content').innerHTML = response;
+                        // 모달 열기
+                        $('#movieDetailModal').modal('show'); // 여기 수정
+                    },
+                    error: function (error) {
+                        console.error('Error fetching movie details:', error);
+                    }
+                });
             }
 
+            // 모달이 열릴 때 배경에 효과 추가
+            $('#movieDetailModal').on('show.bs.modal', function () {
+                $('body').addClass('modal-opened');
+            });
 
-        </script>
-
+            // 모달이 닫힐 때 배경 효과 제거
+            $('#movieDetailModal').on('hidden.bs.modal', function () {
+                $('body').removeClass('modal-opened');
+                document.getElementById('modal-content').innerHTML = "";
+            });
+        });
+    </script>
 </body>
+
 </html>
