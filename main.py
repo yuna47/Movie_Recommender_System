@@ -5,7 +5,6 @@ from tkinter import Image
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 
 app = Flask(__name__)
@@ -34,11 +33,23 @@ class Movie(db.Model):
     img = db.Column(db.String(255), nullable=False)
 
 
-
 @app.route('/allMovie')
 def allMovie():
-    movie = Movie.query.all()
-    return render_template('allMovie.html',  movie=movie)
+    movies = Movie.query.all()
+    return render_template('allMovie.html',  movies=movies)
+
+
+@app.route('/allMovie/<int:movie_id>')
+def get_movie_details(movie_id):
+    # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
+    movie = Movie.query.get(movie_id)
+
+    if movie:
+        # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
+        return render_template('movie_details.html', movie=movie)
+    else:
+        # 영화 정보가 없는 경우, 에러 메시지 또는 기본 정보를 반환
+        return "영화 정보를 찾을 수 없습니다."
 
 
 @app.route('/main')
@@ -72,7 +83,8 @@ def login():
 
 @app.route('/logout')
 def logout():
-    pass
+    session.pop('user', None)
+    return redirect(url_for('start'))
 
 
 @app.route('/')
@@ -88,7 +100,7 @@ def signUp():
         email = request.form['email']
 
         if not username or not email or not password:
-            return render_template('signup.html', error='Please fill in all fields.')
+            return render_template('signUp.html', error='Please fill in all fields.')
 
         new_user = User(username=username, email=email, password=password)
         db.session.add(new_user)
@@ -96,7 +108,7 @@ def signUp():
 
         return redirect(url_for('login'))
 
-    return render_template('signup.html')
+    return render_template('signUp.html')
 
 
 @app.route('/movieDetails/<int:data_movie_id>')
@@ -148,5 +160,7 @@ def insert_data_from_csv(csv_file_path):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        insert_data_from_csv('./movie_crawl/output/movie.csv')
+        # 데이터베이스가 비어있을 경우에만 CSV 파일에서 데이터 삽입
+        if not Movie.query.first():
+            insert_data_from_csv('./movie_crawl/output/movie.csv')
     app.run(debug=True)
