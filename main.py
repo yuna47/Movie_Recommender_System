@@ -9,7 +9,7 @@ from flask_migrate import Migrate
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@210.117.128.202:3306/movieflix'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@localhost:3306/movieflix'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 db = SQLAlchemy(app)
