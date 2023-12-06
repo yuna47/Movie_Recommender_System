@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="Movieflix">
-  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.49">
+  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.40">
     <root id="1">
       <DefaultCasing>lower/lower</DefaultCasing>
       <DefaultEngine>InnoDB</DefaultEngine>
@@ -1083,22 +1083,22 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     </table>
     <column id="299" parent="298" name="id">
       <AutoIncrement>1</AutoIncrement>
-      <DasType>int|0s</DasType>
+      <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
     <column id="300" parent="298" name="username">
-      <DasType>varchar(80)|0s</DasType>
+      <DataType>varchar(80)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
     <column id="301" parent="298" name="password">
-      <DasType>varchar(255)|0s</DasType>
+      <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
     <column id="302" parent="298" name="email">
-      <DasType>varchar(80)|0s</DasType>
+      <DataType>varchar(80)|0s</DataType>
       <Position>4</Position>
     </column>
     <index id="303" parent="298" name="PRIMARY">
