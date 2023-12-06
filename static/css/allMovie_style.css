@@ -7,7 +7,7 @@ body {
 
 .header {
     background-color: #333;
-    color: #fff;
+    color: #000;
     cursor: default;
     padding: 10px;
     display: flex;
@@ -68,33 +68,6 @@ body {
     flex: 0 0 calc(12.5% - 10px);
     box-sizing: border-box;
     margin-bottom: 10px;
-}
-
-/* 모달창 스타일 */
-#movieDetailModal {
-    display: none;
-    position: fixed;
-    background-color: rgba(0, 0, 0, 0.7); /* 검은색 배경 투명도 조절 */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0);
-    z-index: 1000;
-    color: #fff;
-}
-
-#movieDetailModal img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-}
-
-.movie-poster img:last-child {
-    margin-right: 0;
-}
-
-#movieDetailModal p {
-    margin: 10px 0;
-    font-size: 18px;
 }
 
 .dark-overlay {
