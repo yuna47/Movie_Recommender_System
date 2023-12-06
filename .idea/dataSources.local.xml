@@ -15,5 +15,11 @@
         </introspection-scope>
       </schema-mapping>
     </data-source>
+    <data-source name="Movieflix" uuid="621d5953-1be4-4624-9802-db904688d5b3">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" exact-version="0" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>dc2023</user-name>
+      <schema-mapping />
+    </data-source>
   </component>
 </project>
