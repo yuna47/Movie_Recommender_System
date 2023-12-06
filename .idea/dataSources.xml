@@ -8,7 +8,7 @@
       <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="@Movieflix" uuid="3a0edb71-b5cf-4f8a-9fb5-f868810bcb65">
+    <data-source source="LOCAL" name="Movieflix" uuid="3a0edb71-b5cf-4f8a-9fb5-f868810bcb65">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
