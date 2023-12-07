@@ -54,11 +54,11 @@ def get_movie_details(movie_id):
 
 @app.route('/main')
 def main():
-    movie = Movie.query.all()
+    movies = Movie.query.all()
     user_info = session.get('user')
     if user_info:
         username = user_info['username']
-        return render_template('main.html', username=username, movie=movie)
+        return render_template('main.html', username=username, movies=movies)
     else:
         # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
         return redirect(url_for('login'))
