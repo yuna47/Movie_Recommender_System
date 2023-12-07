@@ -9,7 +9,7 @@ from flask_migrate import Migrate
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@localhost:3306/movieflix'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@210.117.128.202:3306/movieflix'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 db = SQLAlchemy(app)
@@ -46,7 +46,7 @@ def get_movie_details(movie_id):
 
     if movie:
         # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
-        return render_template('movie_details.html', movie=movie)
+        return render_template('movie_detail_modal.html', movie=movie)
     else:
         # 영화 정보가 없는 경우, 에러 메시지 또는 기본 정보를 반환
         return "영화 정보를 찾을 수 없습니다."

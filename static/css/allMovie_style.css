@@ -70,7 +70,9 @@ body {
     margin-bottom: 10px;
 }
 
-.dark-overlay {
+/* 현재의 .dark-overlay 클래스는 뒷 배경 전체에 적용되므로 .modal-dark-overlay로 변경 */
+.modal-dark-overlay {
     background: rgba(0, 0, 0, 0.5); /* 어두운 배경의 색상과 투명도 조절 */
     overflow: hidden; /* 스크롤이 생길 경우 스크롤을 감추도록 함 */
 }
+
