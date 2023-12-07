@@ -82,15 +82,13 @@
             });
         });
 
-        // 모달이 열릴 때 배경에 효과 추가
         $('#movieDetailModal').on('show.bs.modal', function () {
-            // 모달 열 때만 어둡게 만들기
-            $('.movie-posters, .header').addClass('dark-overlay');
+        // 모달 열 때 모달을 제외한 부분만 어둡게 만들기
+        $('.movie-posters, .header').addClass('dark-overlay');
         });
 
-        // 모달이 닫힐 때 URL 원복
         $('#movieDetailModal').on('hidden.bs.modal', function () {
-            // 모달이 닫힐 때 어둡게 만든 효과 제거
+            // 모달 닫을 때 어둡게 만든 효과 제거
             $('.movie-posters, .header').removeClass('dark-overlay');
             document.getElementById('modal-content').innerHTML = "";
 
@@ -99,7 +97,6 @@
             window.history.pushState({ path: originalUrl }, '', originalUrl);
         });
 
-        // 모달 외의 영역 클릭 시 모달 닫기
         $(document).on('click', function (e) {
             if ($(e.target).closest('#movieDetailModal').length === 0) {
                 // 모달 외의 영역을 클릭하면 모달 닫기

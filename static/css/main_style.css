@@ -87,14 +87,12 @@ body {
     height: auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-
 .movie {
     flex: 0 0 calc(12.5% - 10px);
     box-sizing: border-box;
     margin-bottom: 10px;
     border-radius: 5px;
 }
-
 /* 예시: 영화 상세 정보 모달 스타일 */
 #movieDetailModal {
     display: none;
@@ -108,18 +106,15 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     z-index: 1000;
 }
-
 #movieDetailModal img {
     max-width: 100%;
     height: auto;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-
 .movie-poster img:last-child {
     margin-right: 0; /* 마지막 포스터에는 마진을 적용하지 않음 */
 }
-
 #movieDetailModal p {
     margin: 10px 0;
     font-size: 18px;
