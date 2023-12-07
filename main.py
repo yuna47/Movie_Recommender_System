@@ -1,7 +1,5 @@
 import csv
-import os
 import secrets
-from tkinter import Image
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
