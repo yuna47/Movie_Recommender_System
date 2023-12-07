@@ -63,6 +63,19 @@ def main():
         # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
         return redirect(url_for('login'))
 
+@app.route('/main/<int:movie_id>')
+def get_movie_details_main(movie_id):
+    # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
+    movie = Movie.query.get(movie_id)
+
+    if movie:
+        # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
+        return render_template('movie_detail_modal.html', movie=movie)
+    else:
+        # 영화 정보가 없는 경우, 에러 메시지 또는 기본 정보를 반환
+        return "영화 정보를 찾을 수 없습니다."
+
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -113,10 +126,10 @@ def signUp():
     return render_template('signUp.html')
 
 
-@app.route('/movieDetails/<int:data_movie_id>')
-def movieDetails(data_movie_id):
-    # 해당 ID의 영화를 찾음
-    return render_template('movieDetails.html', movie_id=data_movie_id)
+# @app.route('/movieDetails/<int:data_movie_id>')
+# def movieDetails(data_movie_id):
+#     # 해당 ID의 영화를 찾음
+#     return render_template('movieDetails.html', movie_id=data_movie_id)
 
 @app.route('/myfavoGenre')
 def myGenre():
