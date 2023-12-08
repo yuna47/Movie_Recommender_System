@@ -5,6 +5,9 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+from process_data import prepare_data
+from recommend import recommend
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@210.117.128.202:3306/movieflix'
@@ -86,11 +89,16 @@ def my_genre():
 
 @app.route('/main')
 def main():
-    movies = Movie.query.all()
+    favor_movies = ['조제', '말아톤', '가을로']
+    favor_genres = ['액션', '범죄']
+    recommended_movie_ids = recommend(favor_movies, favor_genres)
+    recommended_movies = [Movie.query.get(movie_id) for movie_id in recommended_movie_ids]
+    print("-------", recommended_movies)
+
     user_info = session.get('user')
     if user_info:
         username = user_info['username']
-        return render_template('main.html', username=username, movies=movies)
+        return render_template('main.html', username=username, movies=recommended_movies)
     else:
         # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
         return redirect(url_for('login'))
@@ -150,6 +158,7 @@ def insert_data_from_csv(csv_file_path):
 
 
 if __name__ == '__main__':
+    prepare_data('../movie_crawl/output/movie.csv', ['액션', '범죄'])
     with app.app_context():
         db.create_all()
         # 데이터베이스가 비어있을 경우에만 CSV 파일에서 데이터 삽입

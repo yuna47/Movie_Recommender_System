@@ -1,8 +1,10 @@
+import os
 import re
 import pandas as pd
 from konlpy.tag import Okt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+
 
 okt = Okt()
 
@@ -56,10 +58,22 @@ def generate_cosine_sim(tfidf_matrix):
 
 
 def generate_indices(dataframe):
+    # return pd.Series(dataframe['id'].values, index=dataframe['title']).drop_duplicates()
     return pd.Series(dataframe.index, index=dataframe['title']).drop_duplicates()
 
 
+def load_data_from_db():
+    from main import Movie
+    movies = Movie.query.all()
+    dataframe = pd.DataFrame([
+        {'id': movie.id, 'title': movie.title, 'genre': movie.genre, 'director': movie.director, 'actor': movie.actor, 'synopsis': movie.synopsis, 'img': movie.img}
+        for movie in movies
+    ])
+    return dataframe
+
+
 def prepare_data(file_path, preferred_genres):
+    # dataframe = process_dataframe(load_data_from_db(), preferred_genres)
     dataframe = process_dataframe(pd.read_csv(file_path), preferred_genres)
     tfidf_matrix, tfidf = generate_tfidf_matrix(dataframe)
     cosine_sim = generate_cosine_sim(tfidf_matrix)
@@ -77,9 +91,21 @@ def prepare_data(file_path, preferred_genres):
 
 
 def load_data():
-    tfidf_matrix = pd.read_pickle('tfidf_matrix.pkl')
-    cosine_sim = pd.read_pickle('cosine_sim.pkl')
-    indices = pd.read_pickle('indices.pkl')
-    dataframe = pd.read_pickle('dataframe.pkl')
+    # tfidf_matrix = pd.read_pickle('tfidf_matrix.pkl')
+    # cosine_sim = pd.read_pickle('cosine_sim.pkl')
+    # indices = pd.read_pickle('indices.pkl')
+    # dataframe = pd.read_pickle('dataframe.pkl')
+
+    current_dir = os.path.dirname(__file__)
+
+    tfidf_matrix_path = os.path.join(current_dir, 'tfidf_matrix.pkl')
+    cosine_sim_path = os.path.join(current_dir, 'cosine_sim.pkl')
+    indices_path = os.path.join(current_dir, 'indices.pkl')
+    dataframe_path = os.path.join(current_dir, 'dataframe.pkl')
+
+    tfidf_matrix = pd.read_pickle(tfidf_matrix_path)
+    cosine_sim = pd.read_pickle(cosine_sim_path)
+    indices = pd.read_pickle(indices_path)
+    dataframe = pd.read_pickle(dataframe_path)
 
     return tfidf_matrix, cosine_sim, indices, dataframe
