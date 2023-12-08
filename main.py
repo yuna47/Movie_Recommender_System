@@ -90,15 +90,15 @@ def my_favorite_genre():
 
 @app.route('/main')
 def main():
-    favor_movies = [16, 692, 687]
-    favor_genres = ['액션', '범죄']
-    recommended_movie_ids = recommend(favor_movies, favor_genres)
-    recommended_movies = [Movie.query.get(movie_id) for movie_id in recommended_movie_ids]
-    print("-------", recommended_movies)
-
     user_info = session.get('user')
     if user_info:
         username = user_info['username']
+
+        favor_movies = [16, 692, 687]
+        favor_genres = ['액션', '범죄']
+        recommended_movie_ids = recommend(favor_movies, favor_genres)
+        recommended_movies = [Movie.query.get(movie_id) for movie_id in recommended_movie_ids]
+
         return render_template('main.html', username=username, movies=recommended_movies)
     else:
         # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
@@ -106,7 +106,7 @@ def main():
 
 
 @app.route('/allMovie')
-def allMovie():
+def all_movie():
     movies = Movie.query.all()
     return render_template('allMovie.html',  movies=movies)
 

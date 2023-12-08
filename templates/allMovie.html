@@ -93,7 +93,7 @@
             document.getElementById('modal-content').innerHTML = "";
 
             // URL 원복 (새로고침 없이)
-            var originalUrl = "{{ url_for('allMovie') }}";
+            var originalUrl = "{{ url_for('all_movie') }}";
             window.history.pushState({ path: originalUrl }, '', originalUrl);
         });
 

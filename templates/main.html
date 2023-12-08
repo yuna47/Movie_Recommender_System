@@ -56,11 +56,11 @@
 
     <script>
         document.getElementById('allMovie').addEventListener('click', function() {
-            window.location.href = "{{ url_for('allMovie') }}";
+            window.location.href = "{{ url_for('all_movie') }}";
         });
 
         document.getElementById('logoutButton').addEventListener('click', function() {
-            window.location.href = "{{ url_for('start') }}";
+            window.location.href = "{{ url_for('logout') }}";
         });
 
         document.querySelectorAll('.movie-poster').forEach(function(poster) {
