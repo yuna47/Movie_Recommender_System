@@ -31,49 +31,9 @@ class Movie(db.Model):
     img = db.Column(db.String(255), nullable=False)
 
 
-@app.route('/allMovie')
-def allMovie():
-    movies = Movie.query.all()
-    return render_template('allMovie.html',  movies=movies)
-
-
-@app.route('/allMovie/<int:movie_id>')
-def get_movie_details(movie_id):
-    # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
-    movie = Movie.query.get(movie_id)
-
-    if movie:
-        # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
-        return render_template('movie_detail_modal.html', movie=movie)
-    else:
-        # 영화 정보가 없는 경우, 에러 메시지 또는 기본 정보를 반환
-        return "영화 정보를 찾을 수 없습니다."
-
-
-@app.route('/main')
-def main():
-    movies = Movie.query.all()
-    user_info = session.get('user')
-    if user_info:
-        username = user_info['username']
-        return render_template('main.html', username=username, movies=movies)
-    else:
-        # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
-        return redirect(url_for('login'))
-
-@app.route('/main/<int:movie_id>')
-def get_movie_details_main(movie_id):
-    # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
-    movie = Movie.query.get(movie_id)
-
-    if movie:
-        # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
-        return render_template('movie_detail_modal.html', movie=movie)
-    else:
-        # 영화 정보가 없는 경우, 에러 메시지 또는 기본 정보를 반환
-        return "영화 정보를 찾을 수 없습니다."
-
-
+@app.route('/')
+def start():
+    return render_template('start.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -100,13 +60,8 @@ def logout():
     return redirect(url_for('start'))
 
 
-@app.route('/')
-def start():
-    return render_template('start.html')
-
-
 @app.route('/signup', methods=['GET', 'POST'])
-def signUp():
+def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -119,9 +74,58 @@ def signUp():
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect(url_for('login'))
+        return redirect(url_for('myFavorGenre'))
 
     return render_template('signUp.html')
+
+
+@app.route('/myFavorGenre')
+def my_genre():
+    return render_template('my_favorite_genre.html')
+
+
+@app.route('/main')
+def main():
+    movies = Movie.query.all()
+    user_info = session.get('user')
+    if user_info:
+        username = user_info['username']
+        return render_template('main.html', username=username, movies=movies)
+    else:
+        # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
+        return redirect(url_for('login'))
+
+
+@app.route('/allMovie')
+def allMovie():
+    movies = Movie.query.all()
+    return render_template('allMovie.html',  movies=movies)
+
+
+@app.route('/main/<int:movie_id>')
+def get_movie_details_main(movie_id):
+    # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
+    movie = Movie.query.get(movie_id)
+
+    if movie:
+        # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
+        return render_template('movie_detail_modal.html', movie=movie)
+    else:
+        # 영화 정보가 없는 경우, 에러 메시지 또는 기본 정보를 반환
+        return "영화 정보를 찾을 수 없습니다."
+
+
+@app.route('/allMovie/<int:movie_id>')
+def get_movie_details(movie_id):
+    # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
+    movie = Movie.query.get(movie_id)
+
+    if movie:
+        # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
+        return render_template('movie_detail_modal.html', movie=movie)
+    else:
+        # 영화 정보가 없는 경우, 에러 메시지 또는 기본 정보를 반환
+        return "영화 정보를 찾을 수 없습니다."
 
 
 # @app.route('/movieDetails/<int:data_movie_id>')
@@ -129,9 +133,6 @@ def signUp():
 #     # 해당 ID의 영화를 찾음
 #     return render_template('movieDetails.html', movie_id=data_movie_id)
 
-@app.route('/myfavoGenre')
-def myGenre():
-    return render_template('my_favorite_genre.html')
 
 # CSV 파일에서 데이터를 읽어와 데이터베이스에 삽입하는 함수
 # @app.route('/')
