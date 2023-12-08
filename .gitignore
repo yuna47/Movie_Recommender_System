@@ -378,4 +378,7 @@ pyrightconfig.json
 # pickle files
 *.pkl
 
+# Database
+config.py
+
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,python,flask

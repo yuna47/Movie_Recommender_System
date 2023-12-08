@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from sqlalchemy import create_engine
 
+from config import Config
 
 okt = Okt()
 
@@ -59,7 +60,7 @@ def generate_cosine_sim(tfidf_matrix):
 
 
 def generate_dataframe_from_db():
-    db_url = 'mysql+mysqlconnector://dc2023:dc5555@210.117.128.202:3306/movieflix'
+    db_url = Config.SQLALCHEMY_DATABASE_URI
     engine = create_engine(db_url)
 
     query = 'SELECT * FROM movie'
