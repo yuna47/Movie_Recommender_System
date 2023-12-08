@@ -58,13 +58,7 @@ def generate_cosine_sim(tfidf_matrix):
     return linear_kernel(tfidf_matrix, tfidf_matrix)
 
 
-def generate_indices(dataframe):
-    # return pd.Series(dataframe['id'].values, index=dataframe['title']).drop_duplicates()
-    return pd.Series(dataframe.index, index=dataframe['title']).drop_duplicates()
-
-
 def generate_dataframe_from_db():
-    # MySQL 데이터베이스에 연결
     db_url = 'mysql+mysqlconnector://dc2023:dc5555@210.117.128.202:3306/movieflix'
     engine = create_engine(db_url)
 
@@ -85,40 +79,30 @@ def generate_dataframe_from_db():
     return dataframe
 
 
-def prepare_data(file_path, preferred_genres):
+def prepare_data(preferred_genres):
     dataframe = process_dataframe(generate_dataframe_from_db(), preferred_genres)
-    # dataframe = process_dataframe(pd.read_csv(file_path), preferred_genres)
     tfidf_matrix, tfidf = generate_tfidf_matrix(dataframe)
     cosine_sim = generate_cosine_sim(tfidf_matrix)
-    indices = generate_indices(dataframe)
 
     tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf.get_feature_names_out())
     cosine_sim_df = pd.DataFrame(cosine_sim, index=dataframe.index, columns=dataframe.index)
 
     tfidf_df.to_pickle('tfidf_matrix.pkl')
     cosine_sim_df.to_pickle('cosine_sim.pkl')
-    indices.to_pickle('indices.pkl')
     dataframe.to_pickle('dataframe.pkl')
 
-    return tfidf_matrix, cosine_sim, indices, dataframe
+    return tfidf_matrix, cosine_sim, dataframe
 
 
 def load_data():
-    # tfidf_matrix = pd.read_pickle('tfidf_matrix.pkl')
-    # cosine_sim = pd.read_pickle('cosine_sim.pkl')
-    # indices = pd.read_pickle('indices.pkl')
-    # dataframe = pd.read_pickle('dataframe.pkl')
-
     current_dir = os.path.dirname(__file__)
 
     tfidf_matrix_path = os.path.join(current_dir, 'tfidf_matrix.pkl')
     cosine_sim_path = os.path.join(current_dir, 'cosine_sim.pkl')
-    indices_path = os.path.join(current_dir, 'indices.pkl')
     dataframe_path = os.path.join(current_dir, 'dataframe.pkl')
 
     tfidf_matrix = pd.read_pickle(tfidf_matrix_path)
     cosine_sim = pd.read_pickle(cosine_sim_path)
-    indices = pd.read_pickle(indices_path)
     dataframe = pd.read_pickle(dataframe_path)
 
-    return tfidf_matrix, cosine_sim, indices, dataframe
+    return tfidf_matrix, cosine_sim, dataframe

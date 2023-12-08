@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from process_data import prepare_data
 from recommend import recommend
 
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dc2023:dc5555@210.117.128.202:3306/movieflix'
@@ -77,13 +78,13 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect(url_for('my_genre'))
+        return redirect(url_for('my_favorite_genre'))
 
     return render_template('signUp.html')
 
 
-@app.route('/myFavorGenre')
-def my_genre():
+@app.route('/myFavoriteGenre')
+def my_favorite_genre():
     return render_template('my_favorite_genre.html')
 
 
