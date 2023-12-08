@@ -89,7 +89,7 @@ def my_genre():
 
 @app.route('/main')
 def main():
-    favor_movies = ['조제', '말아톤', '가을로']
+    favor_movies = [16, 692, 687]
     favor_genres = ['액션', '범죄']
     recommended_movie_ids = recommend(favor_movies, favor_genres)
     recommended_movies = [Movie.query.get(movie_id) for movie_id in recommended_movie_ids]
@@ -158,8 +158,8 @@ def insert_data_from_csv(csv_file_path):
 
 
 if __name__ == '__main__':
-    prepare_data('../movie_crawl/output/movie.csv', ['액션', '범죄'])
     with app.app_context():
+        # prepare_data('../movie_crawl/output/movie.csv', ['액션', '범죄'])
         db.create_all()
         # 데이터베이스가 비어있을 경우에만 CSV 파일에서 데이터 삽입
         if not Movie.query.first():

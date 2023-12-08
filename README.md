@@ -8,3 +8,4 @@
     pip install pandas
     pip install konlpy
     pip install scikit-learn
+    pip install mysql-connector-python

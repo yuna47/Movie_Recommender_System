@@ -4,6 +4,7 @@ import pandas as pd
 from konlpy.tag import Okt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+from sqlalchemy import create_engine
 
 
 okt = Okt()
@@ -62,19 +63,31 @@ def generate_indices(dataframe):
     return pd.Series(dataframe.index, index=dataframe['title']).drop_duplicates()
 
 
-def load_data_from_db():
-    from main import Movie
-    movies = Movie.query.all()
-    dataframe = pd.DataFrame([
-        {'id': movie.id, 'title': movie.title, 'genre': movie.genre, 'director': movie.director, 'actor': movie.actor, 'synopsis': movie.synopsis, 'img': movie.img}
-        for movie in movies
-    ])
+def generate_dataframe_from_db():
+    # MySQL 데이터베이스에 연결
+    db_url = 'mysql+mysqlconnector://dc2023:dc5555@210.117.128.202:3306/movieflix'
+    engine = create_engine(db_url)
+
+    query = 'SELECT * FROM movie'
+
+    database = pd.read_sql_query(query, engine)
+
+    space = pd.DataFrame({'id': [' '],
+                          'title': [' '],
+                          'genre': [' '],
+                          'director': [' '],
+                          'actor': [' '],
+                          'synopsis': [' '],
+                          'img': [' ']})
+
+    dataframe = pd.concat([space, database], ignore_index=True)
+
     return dataframe
 
 
 def prepare_data(file_path, preferred_genres):
-    # dataframe = process_dataframe(load_data_from_db(), preferred_genres)
-    dataframe = process_dataframe(pd.read_csv(file_path), preferred_genres)
+    dataframe = process_dataframe(generate_dataframe_from_db(), preferred_genres)
+    # dataframe = process_dataframe(pd.read_csv(file_path), preferred_genres)
     tfidf_matrix, tfidf = generate_tfidf_matrix(dataframe)
     cosine_sim = generate_cosine_sim(tfidf_matrix)
     indices = generate_indices(dataframe)

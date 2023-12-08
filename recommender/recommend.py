@@ -16,19 +16,18 @@ def prepare(preferred_genres):
 
 
 def recommend(movie_ids, preferred_genres):
-    # cosine_sim, indices, dataframe = prepare(preferred_genres)
-
     # print("Loading data...")
     # tfidf_matrix, cosine_sim, indices, dataframe = load_data()
     print("Preparing data...")
     tfidf_matrix, cosine_sim, indices, dataframe = prepare_data('../movie_crawl/output/movie.csv', preferred_genres)
     result = set()
     # print(indices)
+    print(dataframe.iloc[:17, [0, 1]])
 
     for movie_id in movie_ids:
         # idx = indices[movie_id]
         idx = movie_id
-        print(idx, dataframe["title"][idx])
+        # print(idx, dataframe["title"][idx])
 
         # Get similarity scores for the selected movie
         sim_scores = list(enumerate(cosine_sim[idx]))
@@ -46,7 +45,7 @@ def recommend(movie_ids, preferred_genres):
 
     print('< 추천 영화 >')
     for i, idx in enumerate(result):
-        print(f'{i + 1} : {dataframe["title"][idx]}')
+        print(f'{i + 1} : {dataframe["title"][idx]} {idx}')
 
     return result
 
