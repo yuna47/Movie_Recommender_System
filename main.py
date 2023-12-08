@@ -77,7 +77,7 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect(url_for('myFavorGenre'))
+        return redirect(url_for('my_genre'))
 
     return render_template('signUp.html')
 
