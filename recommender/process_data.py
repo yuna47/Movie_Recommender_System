@@ -16,16 +16,29 @@ def normalize(text):
     return ' '.join(tokens)
 
 
-def process_dataframe(dataframe):
+def sub_horror_genre(text):
+    return text.replace('호러', '')
+
+
+def process_genre(text, preferred_genres):
+    genres = text.split()
+    for preferred_genre in preferred_genres:
+        if preferred_genre in genres:
+            text += f" {preferred_genre}"
+
+
+def process_dataframe(dataframe, preferred_genres):
     dataframe["actor"] = dataframe["actor"].fillna('')
     dataframe["genre"] = dataframe["genre"].apply(sub_special)
+    dataframe["genre"] = dataframe["genre"].apply(sub_horror_genre)
+    dataframe["genre"] = dataframe["genre"].apply(lambda genre: process_genre(genre, preferred_genres))
     dataframe["director"] = dataframe["director"].apply(sub_special)
     dataframe["actor"] = dataframe["actor"].apply(sub_special)
     dataframe["synopsis"] = dataframe["synopsis"].apply(sub_special)
 
     dataframe["synopsis"] = dataframe["synopsis"].apply(normalize)
 
-    dataframe["text"] = dataframe["title"] + " " + dataframe["genre"] + " " + dataframe["director"] + " " + 2 * dataframe["synopsis"]
+    dataframe["text"] = dataframe["genre"] + " " + dataframe["director"] + " " + dataframe["synopsis"]
 
     return dataframe
 
@@ -44,8 +57,8 @@ def generate_indices(dataframe):
     return pd.Series(dataframe.index, index=dataframe['title']).drop_duplicates()
 
 
-def prepare_data(file_path):
-    dataframe = process_dataframe(pd.read_csv(file_path))
+def prepare_data(file_path, preferred_genres):
+    dataframe = process_dataframe(pd.read_csv(file_path), preferred_genres)
     tfidf_matrix, tfidf = generate_tfidf_matrix(dataframe)
     cosine_sim = generate_cosine_sim(tfidf_matrix)
     indices = generate_indices(dataframe)

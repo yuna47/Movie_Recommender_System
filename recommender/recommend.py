@@ -1,18 +1,18 @@
 from process_data import prepare_data, load_data
 
 
-def prepare():
+def prepare(preferred_genres):
     try:
         tfidf_matrix, cosine_sim, indices, dataframe = load_data()
     except FileNotFoundError:
         print("Preparing data...")
-        tfidf_matrix, cosine_sim, indices, dataframe = prepare_data('../movie_crawl/output/movie.csv')
+        tfidf_matrix, cosine_sim, indices, dataframe = prepare_data('../movie_crawl/output/movie.csv', preferred_genres)
     return cosine_sim, indices, dataframe
 
 
-def recommend_list(movies):
-    cosine_sim, indices, dataframe = prepare()
-    recomm = set()
+def recommend_list(movies, preferred_genres):
+    cosine_sim, indices, dataframe = prepare(preferred_genres)
+    result = set()
 
     for movie in movies:
         idx = indices[movie]
@@ -26,19 +26,19 @@ def recommend_list(movies):
         movie_indices = [i[0] for i in sim_scores]
 
         # Add recommended movie indices to the set
-        recomm.update(movie_indices)
+        result.update(movie_indices)
 
         # Convert set to list and get the first 10 movies
-    recomm = list(recomm)[:10]
+    result = list(result)[:10]
 
     print('< 추천 영화 >')
-    for i, idx in enumerate(recomm):
+    for i, idx in enumerate(result):
         print(f'{i + 1} : {dataframe["title"][idx]}')
 
 
-def recommend(title):
-    cosine_sim, indices, dataframe = prepare()
-    recomm = []
+def recommend(title, preferred_genres):
+    cosine_sim, indices, dataframe = prepare(preferred_genres)
+    result = []
     idx = indices[title]
 
     sim_scores = list(enumerate(cosine_sim[idx]))
@@ -49,11 +49,11 @@ def recommend(title):
     movie_indices = [i[0] for i in sim_scores]
 
     for i in range(10):
-        recomm.append(dataframe['title'][movie_indices[i]])
+        result.append(dataframe['title'][movie_indices[i]])
 
     print('< 추천 영화 >')
     for i in range(10):
-        print(str(i + 1) + ' : ' + recomm[i])
+        print(str(i + 1) + ' : ' + result[i])
 
 
 if __name__ == "__main__":
