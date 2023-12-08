@@ -2,11 +2,13 @@ from process_data import prepare_data, load_data
 
 
 def prepare(preferred_genres):
-    try:
-        tfidf_matrix, cosine_sim, indices, dataframe = load_data()
-    except FileNotFoundError:
-        print("Preparing data...")
-        tfidf_matrix, cosine_sim, indices, dataframe = prepare_data('../movie_crawl/output/movie.csv', preferred_genres)
+    # try:
+    #     tfidf_matrix, cosine_sim, indices, dataframe = load_data()
+    # except FileNotFoundError:
+    #     print("Preparing data...")
+    #     tfidf_matrix, cosine_sim, indices, dataframe = prepare_data('../movie_crawl/output/movie.csv', preferred_genres)
+    print("Preparing data...")
+    tfidf_matrix, cosine_sim, indices, dataframe = prepare_data('../movie_crawl/output/movie.csv', preferred_genres)
     return cosine_sim, indices, dataframe
 
 
@@ -58,6 +60,6 @@ def recommend(title, preferred_genres):
 
 if __name__ == "__main__":
     # recommend('곤지암')
-    recommend_list(['소름', '말아톤', '은교'])
+    recommend_list(['조제', '말아톤', '가을로'], ['액션', '범죄'])
     # recommend_list(['곤지암', '공작', '감기'])
     # recommend_list(['여고괴담 5', '부산행', '기생충'])

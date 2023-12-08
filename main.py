@@ -134,7 +134,7 @@ def myGenre():
     return render_template('my_favorite_genre.html')
 
 # CSV 파일에서 데이터를 읽어와 데이터베이스에 삽입하는 함수
-@app.route('/')
+# @app.route('/')
 def insert_data_from_csv(csv_file_path):
     with open(csv_file_path, 'r', encoding='utf-8-sig') as csvfile:
         csv_reader = csv.DictReader(csvfile)
