@@ -88,9 +88,9 @@ def prepare_data(preferred_genres):
     tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf.get_feature_names_out())
     cosine_sim_df = pd.DataFrame(cosine_sim, index=dataframe.index, columns=dataframe.index)
 
-    tfidf_df.to_pickle('tfidf_matrix.pkl')
-    cosine_sim_df.to_pickle('cosine_sim.pkl')
-    dataframe.to_pickle('dataframe.pkl')
+    tfidf_df.to_pickle('recommender/tfidf_matrix.pkl')
+    cosine_sim_df.to_pickle('recommender/cosine_sim.pkl')
+    dataframe.to_pickle('recommender/dataframe.pkl')
 
     return tfidf_matrix, cosine_sim, dataframe
 
@@ -98,9 +98,9 @@ def prepare_data(preferred_genres):
 def load_data():
     current_dir = os.path.dirname(__file__)
 
-    tfidf_matrix_path = os.path.join(current_dir, 'tfidf_matrix.pkl')
-    cosine_sim_path = os.path.join(current_dir, 'cosine_sim.pkl')
-    dataframe_path = os.path.join(current_dir, 'dataframe.pkl')
+    tfidf_matrix_path = os.path.join(current_dir, 'recommender/tfidf_matrix.pkl')
+    cosine_sim_path = os.path.join(current_dir, 'recommender/cosine_sim.pkl')
+    dataframe_path = os.path.join(current_dir, 'recommender/dataframe.pkl')
 
     tfidf_matrix = pd.read_pickle(tfidf_matrix_path)
     cosine_sim = pd.read_pickle(cosine_sim_path)
