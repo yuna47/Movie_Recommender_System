@@ -20,23 +20,20 @@ def normalize(text):
     return ' '.join(tokens)
 
 
-def sub_horror_genre(text):
-    return text.replace('호러', '')
-
-
 def process_genre(text, preferred_genres):
+    text = text.replace(', ', ' ')
     genres = text.split()
     for preferred_genre in preferred_genres:
         if preferred_genre in genres:
             text += f" {preferred_genre}"
+    print(text)
 
     return text
 
 
 def process_dataframe(dataframe, preferred_genres):
     dataframe = dataframe.fillna('')
-    dataframe["genre"] = dataframe["genre"].apply(sub_special)
-    dataframe["genre"] = dataframe["genre"].apply(sub_horror_genre)
+    # dataframe["genre"] = dataframe["genre"].apply(sub_special)
     dataframe["genre"] = dataframe["genre"].apply(lambda genre: process_genre(genre, preferred_genres))
     dataframe["director"] = dataframe["director"].apply(sub_special)
     dataframe["actor"] = dataframe["actor"].apply(sub_special)
