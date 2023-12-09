@@ -4,6 +4,7 @@ import secrets
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from sqlalchemy import func
 from sqlalchemy.orm.attributes import flag_modified
 
 from config import Config
@@ -104,6 +105,25 @@ def select_preferred_genres():
         return redirect(url_for('select_preferred_movies'))
 
     return render_template('select_preferred_genres.html', genres=genres)
+
+
+@app.route('/selectPreferredMovies', methods=['GET', 'POST'])
+def select_preferred_movies():
+    movies = Movie.query.order_by(func.random()).limit(100).all()
+
+    if request.method == 'POST':
+        selected_movies_ids = request.form.getlist('movie')
+
+        user_info = session.get('user')
+        user_id = user_info['id']
+        user = User.query.get(user_id)
+
+        user.preferred_movies = ' '.join(selected_movies_ids)
+        db.session.commit()
+
+        return redirect(url_for('main'))
+
+    return render_template('select_preferred_movies.html', movies=movies)
 
 
 @app.route('/myFavoriteMovie', methods=['GET', 'POST'])
