@@ -4,6 +4,7 @@ import secrets
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from sqlalchemy.orm.attributes import flag_modified
 
 from config import Config
 from process_data import prepare_data
@@ -21,6 +22,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    preferred_genres = db.Column(db.String(255), default=' ')
+    preferred_movies = db.Column(db.String(255), default=' ')
 
 
 class Movie(db.Model):
@@ -76,14 +79,80 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect(url_for('my_favorite_genre'))
+        session['user'] = {'id': new_user.id, 'username': new_user.username}
+
+        return redirect(url_for('select_preferred_genres'))
 
     return render_template('signUp.html')
 
 
-@app.route('/myFavoriteGenre')
+@app.route('/myFavoriteGenre', methods=['GET', 'POST'])
 def my_favorite_genre():
+    if request.method == 'POST':
+        print("------------")
+        selected_genres = request.form.getlist('selected_genres[]')
+        print(selected_genres)
+
+        user_info = session.get('user')
+
+        if user_info:
+            user_id = user_info['id']
+            user = User.query.get(user_id)
+
+            if 'preferred_genres' not in dir(user):
+                user.preferred_genres = ' '
+
+            user.preferred_genres = ' '.join(selected_genres)
+            db.session.commit()
+
+            # Notify SQLAlchemy about the modification of preferred_genres
+            flag_modified(user, 'preferred_genres')
+
+        return redirect(url_for('my_favorite_movie'))
+
     return render_template('my_favorite_genre.html')
+
+
+@app.route('/selectPreferredGenres', methods=['GET', 'POST'])
+def select_preferred_genres():
+    genres = ['코미디', '멜로/로맨스', '범죄', '액션', '드라마', '다큐멘터리', '스릴러', '공포(호러)',
+              '미스터리', '어드벤처', '가족', '판타지', '뮤지컬', 'SF', '사극', '애니메이션']
+
+    if request.method == 'POST':
+        selected_genres = request.form.getlist('genre')
+
+        user_info = session.get('user')
+        user_id = user_info['id']
+        user = User.query.get(user_id)
+
+        user.preferred_genres = ' '.join(selected_genres)
+        db.session.commit()
+
+        return redirect(url_for('select_preferred_movies'))
+
+    return render_template('select_preferred_genres.html', genres=genres)
+
+
+@app.route('/myFavoriteMovie', methods=['GET', 'POST'])
+def my_favorite_movie():
+    # if request.method == 'POST':
+    #     selected_movies = request.form.getlist('selected_movies[]')
+    #
+    #     user_info = session.get('user')
+    #
+    #     if user_info:
+    #         user_id = user_info['id']
+    #         user = User.query.get(user_id)
+    #
+    #         user.preferred_movies = ' '.join(selected_movies)
+    #         db.session.commit()
+    #
+    #         # Notify SQLAlchemy about the modification of preferred_movies
+    #         flag_modified(user, 'preferred_movies')
+    #
+    #     return redirect(url_for('login'))
+
+    return render_template('my_favorite_movie.html')
 
 
 @app.route('/main')
