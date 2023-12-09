@@ -86,33 +86,6 @@ def signup():
     return render_template('signUp.html')
 
 
-@app.route('/myFavoriteGenre', methods=['GET', 'POST'])
-def my_favorite_genre():
-    if request.method == 'POST':
-        print("------------")
-        selected_genres = request.form.getlist('selected_genres[]')
-        print(selected_genres)
-
-        user_info = session.get('user')
-
-        if user_info:
-            user_id = user_info['id']
-            user = User.query.get(user_id)
-
-            if 'preferred_genres' not in dir(user):
-                user.preferred_genres = ' '
-
-            user.preferred_genres = ' '.join(selected_genres)
-            db.session.commit()
-
-            # Notify SQLAlchemy about the modification of preferred_genres
-            flag_modified(user, 'preferred_genres')
-
-        return redirect(url_for('my_favorite_movie'))
-
-    return render_template('my_favorite_genre.html')
-
-
 @app.route('/selectPreferredGenres', methods=['GET', 'POST'])
 def select_preferred_genres():
     genres = ['코미디', '멜로/로맨스', '범죄', '액션', '드라마', '다큐멘터리', '스릴러', '공포(호러)',
