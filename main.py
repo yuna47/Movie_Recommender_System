@@ -131,15 +131,20 @@ def main():
     user_info = session.get('user')
     if user_info:
         username = user_info['username']
+        user_id = user_info['id']
+        user = User.query.get(user_id)
 
-        favor_movies = [16, 692, 687]
-        favor_genres = ['액션', '범죄']
-        recommended_movie_ids = recommend(favor_movies, favor_genres)
+        preferred_movies_str = user.preferred_movies
+        preferred_movies = list(map(int, preferred_movies_str.split()))
+
+        preferred_genres_str = user.preferred_genres
+        preferred_genres = preferred_genres_str.split()
+
+        recommended_movie_ids = recommend(preferred_movies, preferred_genres)
         recommended_movies = [Movie.query.get(movie_id) for movie_id in recommended_movie_ids]
 
         return render_template('main.html', username=username, movies=recommended_movies)
     else:
-        # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
         return redirect(url_for('login'))
 
 

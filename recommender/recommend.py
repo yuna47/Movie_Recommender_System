@@ -1,11 +1,17 @@
 from process_data import prepare_data, load_data
 
 
+def prepare(preferred_genres):
+    try:
+        cosine_sim, dataframe = load_data()
+    except FileNotFoundError:
+        cosine_sim, dataframe = prepare_data(preferred_genres)
+
+    return cosine_sim, dataframe
+
+
 def recommend(movie_ids, preferred_genres):
-    # print("Loading data...")
-    # tfidf_matrix, cosine_sim, dataframe = load_data()
-    print("Preparing data...")
-    tfidf_matrix, cosine_sim, dataframe = prepare_data(preferred_genres)
+    cosine_sim, dataframe = prepare(preferred_genres)
     result = set()
 
     for movie_id in movie_ids:
@@ -27,11 +33,3 @@ def recommend(movie_ids, preferred_genres):
     #     print(f'{i + 1} : {dataframe["title"][movie_id]} {movie_id}')
 
     return result
-
-
-if __name__ == "__main__":
-    # recommend('곤지암')
-    # recommend(['조제', '말아톤', '가을로'], ['액션', '범죄'])
-    recommend([16, 692, 687], ['액션', '범죄'])
-    # recommend_list(['곤지암', '공작', '감기'])
-    # recommend_list(['여고괴담 5', '부산행', '기생충'])
