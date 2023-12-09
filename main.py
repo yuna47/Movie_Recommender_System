@@ -126,28 +126,6 @@ def select_preferred_movies():
     return render_template('select_preferred_movies.html', movies=movies)
 
 
-@app.route('/myFavoriteMovie', methods=['GET', 'POST'])
-def my_favorite_movie():
-    # if request.method == 'POST':
-    #     selected_movies = request.form.getlist('selected_movies[]')
-    #
-    #     user_info = session.get('user')
-    #
-    #     if user_info:
-    #         user_id = user_info['id']
-    #         user = User.query.get(user_id)
-    #
-    #         user.preferred_movies = ' '.join(selected_movies)
-    #         db.session.commit()
-    #
-    #         # Notify SQLAlchemy about the modification of preferred_movies
-    #         flag_modified(user, 'preferred_movies')
-    #
-    #     return redirect(url_for('login'))
-
-    return render_template('my_favorite_movie.html')
-
-
 @app.route('/main')
 def main():
     user_info = session.get('user')
