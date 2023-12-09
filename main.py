@@ -1,14 +1,11 @@
 import csv
-import secrets
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import func
-from sqlalchemy.orm.attributes import flag_modified
 
 from config import Config
-from process_data import prepare_data
 from recommend import recommend
 
 
@@ -203,7 +200,6 @@ def insert_data_from_csv(csv_file_path):
 
 if __name__ == '__main__':
     with app.app_context():
-        # prepare_data('../movie_crawl/output/movie.csv', ['액션', '범죄'])
         db.create_all()
         # 데이터베이스가 비어있을 경우에만 CSV 파일에서 데이터 삽입
         if not Movie.query.first():

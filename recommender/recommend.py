@@ -28,8 +28,4 @@ def recommend(movie_ids, preferred_genres):
 
     result = list(result)[:20]
 
-    # print('< 추천 영화 >')
-    # for i, movie_id in enumerate(result):
-    #     print(f'{i + 1} : {dataframe["title"][movie_id]} {movie_id}')
-
     return result

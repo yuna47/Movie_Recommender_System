@@ -94,8 +94,8 @@ def load_data():
     print("Loading data...")
     current_dir = os.path.dirname(__file__)
 
-    cosine_sim_path = os.path.join(current_dir, 'recommender/cosine_sim.pkl')
-    dataframe_path = os.path.join(current_dir, 'recommender/dataframe.pkl')
+    cosine_sim_path = os.path.join(current_dir, 'cosine_sim.pkl')
+    dataframe_path = os.path.join(current_dir, 'dataframe.pkl')
 
     cosine_sim = pd.read_pickle(cosine_sim_path)
     dataframe = pd.read_pickle(dataframe_path)
