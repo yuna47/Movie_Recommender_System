@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from sqlalchemy import func
 
 from config import Config
+from process_data import prepare_data
 from recommend import recommend
 
 
@@ -118,6 +119,14 @@ def select_preferred_movies():
         user.preferred_movies = ' '.join(selected_movies_ids)
         db.session.commit()
 
+        user_info = session.get('user')
+        user_id = user_info['id']
+        user = User.query.get(user_id)
+
+        preferred_genres_str = user.preferred_genres
+        preferred_genres = preferred_genres_str.split()
+        prepare_data(preferred_genres)
+
         return redirect(url_for('main'))
 
     return render_template('select_preferred_movies.html', movies=movies)
@@ -137,7 +146,7 @@ def main():
         preferred_genres_str = user.preferred_genres
         preferred_genres = preferred_genres_str.split()
 
-        recommended_movie_ids = recommend(preferred_movies, preferred_genres)
+        recommended_movie_ids = recommend(preferred_movies, preferred_genres, db.session.is_modified(user))
         recommended_movies = [Movie.query.get(movie_id) for movie_id in recommended_movie_ids]
 
         return render_template('main.html', username=username, movies=recommended_movies)

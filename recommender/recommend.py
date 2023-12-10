@@ -1,17 +1,20 @@
 from process_data import prepare_data, load_data
 
 
-def prepare(preferred_genres):
-    try:
-        cosine_sim, dataframe = load_data()
-    except FileNotFoundError:
+def prepare(preferred_genres, modified):
+    if modified:
         cosine_sim, dataframe = prepare_data(preferred_genres)
+    else:
+        try:
+            cosine_sim, dataframe = load_data()
+        except FileNotFoundError:
+            cosine_sim, dataframe = prepare_data(preferred_genres)
 
     return cosine_sim, dataframe
 
 
-def recommend(movie_ids, preferred_genres):
-    cosine_sim, dataframe = prepare(preferred_genres)
+def recommend(movie_ids, preferred_genres, modified):
+    cosine_sim, dataframe = prepare(preferred_genres, modified)
     result = set()
 
     for movie_id in movie_ids:
