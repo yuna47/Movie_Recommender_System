@@ -160,6 +160,18 @@ def all_movie():
     return render_template('allMovie.html',  movies=movies)
 
 
+@app.route('/search', methods=['GET'])
+def search():
+    search_query = request.args.get('search_query', '')
+
+    if search_query:
+        search_results = Movie.query.filter(Movie.title.ilike(f'%{search_query}%')).all()
+    else:
+        search_results = []
+
+    return render_template('search_results.html', search_results=search_results, search_query=search_query)
+
+
 @app.route('/main/<int:movie_id>')
 def get_movie_details_main(movie_id):
     # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
