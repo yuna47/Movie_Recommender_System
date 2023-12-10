@@ -50,6 +50,15 @@ def login():
 
         if user and user.password == password:
             session['user'] = {'id': user.id, 'username': user.username}
+
+            user_info = session.get('user')
+            user_id = user_info['id']
+            user = User.query.get(user_id)
+
+            preferred_genres_str = user.preferred_genres
+            preferred_genres = preferred_genres_str.split()
+            prepare_data(preferred_genres)
+
             return redirect(url_for('main'))
         else:
             error = 'Invalid username or password'
@@ -149,7 +158,9 @@ def main():
         recommended_movie_ids = recommend(preferred_movies, preferred_genres, db.session.is_modified(user))
         recommended_movies = [Movie.query.get(movie_id) for movie_id in recommended_movie_ids]
 
-        return render_template('main.html', username=username, movies=recommended_movies)
+        random_movies = Movie.query.order_by(func.random()).limit(20).all()
+
+        return render_template('main.html', username=username, recommended_movies=recommended_movies, random_movies=random_movies)
     else:
         return redirect(url_for('login'))
 

@@ -35,13 +35,26 @@
     </div>
 
     <div class="movie-posters">
-        {% for movie in movies[:20] %}
+        {% for movie in recommended_movies[:20] %}
         <div class="movie-poster" data-movie-id="{{ movie.id }}">
             <img src="{{ movie.img }}" alt="{{ movie.id }} 이미지">
         </div>
         {% endfor %}
     </div>
 
+    <div class="spacer"></div>
+
+    <div class="welcome">
+        <h1>놓치지 말아야 할 랜덤 픽</h1>
+    </div>
+
+    <div class="movie-posters">
+        {% for movie in random_movies[:20] %}
+        <div class="movie-poster" data-movie-id="{{ movie.id }}">
+            <img src="{{ movie.img }}" alt="{{ movie.id }} 이미지">
+        </div>
+        {% endfor %}
+    </div>
 
     <div class="modal" id="movieDetailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
