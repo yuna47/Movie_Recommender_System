@@ -149,7 +149,9 @@ def main():
         recommended_movie_ids = recommend(preferred_movies, preferred_genres, db.session.is_modified(user))
         recommended_movies = [Movie.query.get(movie_id) for movie_id in recommended_movie_ids]
 
-        return render_template('main.html', username=username, movies=recommended_movies)
+        random_movies = Movie.query.order_by(func.random()).limit(20).all()
+
+        return render_template('main.html', username=username, recommended_movies=recommended_movies, random_movies=random_movies)
     else:
         return redirect(url_for('login'))
 
