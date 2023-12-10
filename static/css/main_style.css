@@ -77,6 +77,11 @@ body {
 
 
 
+.spacer {
+    height: 15px; /* 간격의 높이를 조절할 수 있는 값 지정 */
+}
+
+
 .movie-poster {
     margin-right: 20px; /* Adjust the margin as needed */
 }

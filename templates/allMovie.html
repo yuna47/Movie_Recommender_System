@@ -17,7 +17,9 @@
     <div class="header">
         <h1 id="mainLink">MovieFlix</h1>
         <h1 id="allMovie">모든 영화</h1>
-        <input type="text" placeholder="Search...">
+        <form method="get" action="{{ url_for('search') }}">
+            <input type="text" name="search_query" placeholder="Search...">
+        </form>
         <button id="logoutButton">Logout</button>
     </div>
 
