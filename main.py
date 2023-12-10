@@ -1,9 +1,9 @@
 import csv
-import secrets
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from sqlalchemy import func
 
 from config import Config
 from process_data import prepare_data
@@ -21,6 +21,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    preferred_genres = db.Column(db.String(255), default=' ')
+    preferred_movies = db.Column(db.String(255), default=' ')
 
 
 class Movie(db.Model):
@@ -76,14 +78,58 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect(url_for('my_favorite_genre'))
+        session['user'] = {'id': new_user.id, 'username': new_user.username}
+
+        return redirect(url_for('select_preferred_genres'))
 
     return render_template('signUp.html')
 
 
-@app.route('/myFavoriteGenre')
-def my_favorite_genre():
-    return render_template('my_favorite_genre.html')
+@app.route('/selectPreferredGenres', methods=['GET', 'POST'])
+def select_preferred_genres():
+    genres = ['코미디', '멜로/로맨스', '범죄', '액션', '드라마', '다큐멘터리', '스릴러', '공포(호러)',
+              '미스터리', '어드벤처', '가족', '판타지', '뮤지컬', 'SF', '사극', '애니메이션']
+
+    if request.method == 'POST':
+        selected_genres = request.form.getlist('genre')
+
+        user_info = session.get('user')
+        user_id = user_info['id']
+        user = User.query.get(user_id)
+
+        user.preferred_genres = ' '.join(selected_genres)
+        db.session.commit()
+
+        return redirect(url_for('select_preferred_movies'))
+
+    return render_template('select_preferred_genres.html', genres=genres)
+
+
+@app.route('/selectPreferredMovies', methods=['GET', 'POST'])
+def select_preferred_movies():
+    movies = Movie.query.order_by(func.random()).limit(100).all()
+
+    if request.method == 'POST':
+        selected_movies_ids = request.form.getlist('movie')
+
+        user_info = session.get('user')
+        user_id = user_info['id']
+        user = User.query.get(user_id)
+
+        user.preferred_movies = ' '.join(selected_movies_ids)
+        db.session.commit()
+
+        user_info = session.get('user')
+        user_id = user_info['id']
+        user = User.query.get(user_id)
+
+        preferred_genres_str = user.preferred_genres
+        preferred_genres = preferred_genres_str.split()
+        prepare_data(preferred_genres)
+
+        return redirect(url_for('main'))
+
+    return render_template('select_preferred_movies.html', movies=movies)
 
 
 @app.route('/main')
@@ -91,15 +137,20 @@ def main():
     user_info = session.get('user')
     if user_info:
         username = user_info['username']
+        user_id = user_info['id']
+        user = User.query.get(user_id)
 
-        favor_movies = [16, 692, 687]
-        favor_genres = ['액션', '범죄']
-        recommended_movie_ids = recommend(favor_movies, favor_genres)
+        preferred_movies_str = user.preferred_movies
+        preferred_movies = list(map(int, preferred_movies_str.split()))
+
+        preferred_genres_str = user.preferred_genres
+        preferred_genres = preferred_genres_str.split()
+
+        recommended_movie_ids = recommend(preferred_movies, preferred_genres, db.session.is_modified(user))
         recommended_movies = [Movie.query.get(movie_id) for movie_id in recommended_movie_ids]
 
         return render_template('main.html', username=username, movies=recommended_movies)
     else:
-        # 사용자 정보가 없으면 로그인 페이지로 리다이렉션
         return redirect(url_for('login'))
 
 
@@ -158,7 +209,6 @@ def insert_data_from_csv(csv_file_path):
 
 if __name__ == '__main__':
     with app.app_context():
-        # prepare_data('../movie_crawl/output/movie.csv', ['액션', '범죄'])
         db.create_all()
         # 데이터베이스가 비어있을 경우에만 CSV 파일에서 데이터 삽입
         if not Movie.query.first():

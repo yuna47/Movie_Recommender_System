@@ -20,11 +20,8 @@ def normalize(text):
     return ' '.join(tokens)
 
 
-def sub_horror_genre(text):
-    return text.replace('호러', '')
-
-
 def process_genre(text, preferred_genres):
+    text = text.replace(', ', ' ')
     genres = text.split()
     for preferred_genre in preferred_genres:
         if preferred_genre in genres:
@@ -35,8 +32,7 @@ def process_genre(text, preferred_genres):
 
 def process_dataframe(dataframe, preferred_genres):
     dataframe = dataframe.fillna('')
-    dataframe["genre"] = dataframe["genre"].apply(sub_special)
-    dataframe["genre"] = dataframe["genre"].apply(sub_horror_genre)
+    # dataframe["genre"] = dataframe["genre"].apply(sub_special)
     dataframe["genre"] = dataframe["genre"].apply(lambda genre: process_genre(genre, preferred_genres))
     dataframe["director"] = dataframe["director"].apply(sub_special)
     dataframe["actor"] = dataframe["actor"].apply(sub_special)
@@ -81,29 +77,27 @@ def generate_dataframe_from_db():
 
 
 def prepare_data(preferred_genres):
+    print("Preparing data...")
     dataframe = process_dataframe(generate_dataframe_from_db(), preferred_genres)
     tfidf_matrix, tfidf = generate_tfidf_matrix(dataframe)
     cosine_sim = generate_cosine_sim(tfidf_matrix)
 
-    tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf.get_feature_names_out())
     cosine_sim_df = pd.DataFrame(cosine_sim, index=dataframe.index, columns=dataframe.index)
 
-    tfidf_df.to_pickle('recommender/tfidf_matrix.pkl')
     cosine_sim_df.to_pickle('recommender/cosine_sim.pkl')
     dataframe.to_pickle('recommender/dataframe.pkl')
 
-    return tfidf_matrix, cosine_sim, dataframe
+    return cosine_sim, dataframe
 
 
 def load_data():
+    print("Loading data...")
     current_dir = os.path.dirname(__file__)
 
-    tfidf_matrix_path = os.path.join(current_dir, 'recommender/tfidf_matrix.pkl')
-    cosine_sim_path = os.path.join(current_dir, 'recommender/cosine_sim.pkl')
-    dataframe_path = os.path.join(current_dir, 'recommender/dataframe.pkl')
+    cosine_sim_path = os.path.join(current_dir, 'cosine_sim.pkl')
+    dataframe_path = os.path.join(current_dir, 'dataframe.pkl')
 
-    tfidf_matrix = pd.read_pickle(tfidf_matrix_path)
     cosine_sim = pd.read_pickle(cosine_sim_path)
     dataframe = pd.read_pickle(dataframe_path)
 
-    return tfidf_matrix, cosine_sim, dataframe
+    return cosine_sim, dataframe

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선호하는 장르 선택</title>
+</head>
+<body>
+    <h2>선호하는 장르 선택</h2>
+    <form method="post" action="{{ url_for('select_preferred_genres') }}">
+        {% for genre in genres %}
+            <label>
+                <input type="checkbox" name="genre" value="{{ genre }}" /> {{ genre }}
+            </label><br>
+        {% endfor %}
+        <br>
+        <button type="submit">Next</button>
+    </form>
+</body>
+</html>

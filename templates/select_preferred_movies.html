@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선호하는 영화 선택</title>
+</head>
+<body>
+    <h2>선호하는 영화 선택</h2>
+    <form method="post" action="{{ url_for('select_preferred_movies') }}">
+        {% for movie in movies %}
+            <label>
+                <input type="checkbox" name="movie" value="{{ movie.id }}" />
+                <img src="{{ movie.img }}" alt="Movie Poster" width="100" height="150">
+            </label><br>
+        {% endfor %}
+        <br>
+        <button type="submit">Complete</button>
+    </form>
+</body>
+</html>
