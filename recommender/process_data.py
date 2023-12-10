@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from sqlalchemy import create_engine
 
+from config import Config
 
 okt = Okt()
 
@@ -59,7 +60,7 @@ def generate_cosine_sim(tfidf_matrix):
 
 
 def generate_dataframe_from_db():
-    db_url = 'mysql+mysqlconnector://dc2023:dc5555@210.117.128.202:3306/movieflix'
+    db_url = Config.SQLALCHEMY_DATABASE_URI
     engine = create_engine(db_url)
 
     query = 'SELECT * FROM movie'
@@ -87,9 +88,9 @@ def prepare_data(preferred_genres):
     tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf.get_feature_names_out())
     cosine_sim_df = pd.DataFrame(cosine_sim, index=dataframe.index, columns=dataframe.index)
 
-    tfidf_df.to_pickle('tfidf_matrix.pkl')
-    cosine_sim_df.to_pickle('cosine_sim.pkl')
-    dataframe.to_pickle('dataframe.pkl')
+    tfidf_df.to_pickle('recommender/tfidf_matrix.pkl')
+    cosine_sim_df.to_pickle('recommender/cosine_sim.pkl')
+    dataframe.to_pickle('recommender/dataframe.pkl')
 
     return tfidf_matrix, cosine_sim, dataframe
 
@@ -97,9 +98,9 @@ def prepare_data(preferred_genres):
 def load_data():
     current_dir = os.path.dirname(__file__)
 
-    tfidf_matrix_path = os.path.join(current_dir, 'tfidf_matrix.pkl')
-    cosine_sim_path = os.path.join(current_dir, 'cosine_sim.pkl')
-    dataframe_path = os.path.join(current_dir, 'dataframe.pkl')
+    tfidf_matrix_path = os.path.join(current_dir, 'recommender/tfidf_matrix.pkl')
+    cosine_sim_path = os.path.join(current_dir, 'recommender/cosine_sim.pkl')
+    dataframe_path = os.path.join(current_dir, 'recommender/dataframe.pkl')
 
     tfidf_matrix = pd.read_pickle(tfidf_matrix_path)
     cosine_sim = pd.read_pickle(cosine_sim_path)

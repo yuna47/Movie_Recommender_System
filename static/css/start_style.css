@@ -49,7 +49,7 @@ h1{
 
 
 .header title {
-    text-align: center
+    text-align: center;
     /*position: flex;*/
     color: #ff0000;
 }
