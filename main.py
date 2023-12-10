@@ -50,6 +50,15 @@ def login():
 
         if user and user.password == password:
             session['user'] = {'id': user.id, 'username': user.username}
+
+            user_info = session.get('user')
+            user_id = user_info['id']
+            user = User.query.get(user_id)
+
+            preferred_genres_str = user.preferred_genres
+            preferred_genres = preferred_genres_str.split()
+            prepare_data(preferred_genres)
+
             return redirect(url_for('main'))
         else:
             error = 'Invalid username or password'
