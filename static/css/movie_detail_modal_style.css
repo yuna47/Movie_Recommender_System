@@ -6,7 +6,7 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0);
-    z-index: 1000;
+    z-index: 9999;
     color: #b62828;
 }
 
@@ -25,6 +25,7 @@
      position: absolute;
      width: 100%;
      height: 100%;
+     z-index: 5;
  }
 
 .like-button {
