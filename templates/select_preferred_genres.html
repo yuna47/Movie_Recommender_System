@@ -2,19 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>선호하는 장르 선택</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select_preferred_genres.css') }}">
 </head>
 <body>
-    <h2>선호하는 장르 선택</h2>
-    <form method="post" action="{{ url_for('select_preferred_genres') }}">
-        {% for genre in genres %}
-            <label>
-                <input type="checkbox" name="genre" value="{{ genre }}" /> {{ genre }}
-            </label><br>
-        {% endfor %}
-        <br>
-        <button type="submit">Next</button>
-    </form>
+    <div class="header">
+        <h1>MovieFlix</h1>
+        <h1 id="allMovie">모든 영화</h1>
+        <input type="text" placeholder="Search...">
+        <button id="logoutButton" >Logout</button>
+    </div>
+    <section class="section1">
+        <div>
+            <h1 style="font-size: xx-large">선호하는 장르 선택</h1>
+        </div>
+        <form method="post" action="{{ url_for('select_preferred_genres') }}" class="genre-form">
+            {% for genre in genres %}
+                <label>
+                    <input type="checkbox" name="genre" value="{{ genre }}" /> {{ genre }}
+                </label><br>
+            {% endfor %}
+            <br>
+            <button type="submit" class="red-rounded-button">Next</button>
+        </form>
+    </section>
 </body>
 </html>
