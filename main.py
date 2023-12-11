@@ -193,6 +193,7 @@ def get_movie_details_main(movie_id):
     # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
     movie = Movie.query.get(movie_id)
 
+
     if movie:
         # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
         return render_template('movie_detail_modal.html', movie=movie)
@@ -201,14 +202,45 @@ def get_movie_details_main(movie_id):
         return "영화 정보를 찾을 수 없습니다."
 
 
-@app.route('/allMovie/<int:movie_id>')
+@app.route('/allMovie/<int:movie_id>', methods=['GET', 'POST'])
 def get_movie_details(movie_id):
     # SQLAlchemy를 사용하여 데이터베이스에서 영화 정보를 가져오기
     movie = Movie.query.get(movie_id)
 
+
     if movie:
         # 영화 정보가 있는 경우, 해당 정보를 HTML에 렌더링
-        return render_template('movie_detail_modal.html', movie=movie)
+        liked = False
+        user_info = session.get('user')
+        if user_info:
+            user_id = user_info['id']
+            user = User.query.get(user_id)
+            liked = movie_id in list(map(int, user.preferred_movies.split(' ')))
+
+        if request.method == 'POST':
+            if user_info:
+                if liked:
+                    # 좋아요 취소
+                    update_preferred_movies = user.preferred_movies.split(' ')
+                    update_preferred_movies.remove(str(movie_id))
+                    liked = False
+                else:
+                    # 좋아요
+                    update_preferred_movies = user.preferred_movies.split(' ')
+                    update_preferred_movies.append(str(movie_id))
+                    print(update_preferred_movies)
+                    liked = True
+
+                print(update_preferred_movies)
+                user.preferred_movies = ' '.join(update_preferred_movies)
+                db.session.commit()
+
+                return redirect(url_for('get_movie_details', movie_id=movie_id, liked=liked))
+            else:
+                return redirect(url_for('login'))
+
+
+        return render_template('movie_detail_modal.html', movie=movie, liked=liked)
     else:
         # 영화 정보가 없는 경우, 에러 메시지 또는 기본 정보를 반환
         return "영화 정보를 찾을 수 없습니다."
