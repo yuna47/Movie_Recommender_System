@@ -12,19 +12,20 @@
         <input type="text" placeholder="Search...">
         <button id="logoutButton" >Logout</button>
     </div>
+    <div>
+        <h1 style="font-size: xx-large">재미있게 본 영화 선택</h1>
+    </div>
     <section class="section1">
-        <div>
-            <h1 style="font-size: xx-large">재미있게 본 영화 선택</h1>
-        </div>
+        <p></p>
         <form method="post" action="{{ url_for('select_preferred_movies') }}">
             {% for movie in movies %}
                 <label>
                     <input type="checkbox" name="movie" value="{{ movie.id }}" />
                     <img src="{{ movie.img }}" alt="Movie Poster" width="100" height="150">
-                </label><br>
+                </label>
             {% endfor %}
             <br>
-            <button type="submit">Complete</button>
+            <button id="completeButton" type="submit">Complete</button>
         </form>
     </section>
 </body>
